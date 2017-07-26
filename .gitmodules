@@ -1,0 +1,3 @@
+[submodule "SmartHive.ZWaveModule/deps/open-zwave"]
+	path = SmartHive.ZWaveModule/deps/open-zwave
+	url = https://github.com/OpenZWave/open-zwave
