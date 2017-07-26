@@ -1,25 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="src">
-      <UniqueIdentifier>{587bb215-e880-4a6f-959b-1e07194fffdc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="inc">
-      <UniqueIdentifier>{efd1205c-dca5-4a2b-a2cc-4cd591e00e6d}</UniqueIdentifier>
-    </Filter>
+    <ClInclude Include="TestOZW.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="CMakeLists.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="dependencies.cmake" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\MinOZW.cpp" />
-    <ClCompile Include="src\MinOzw.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="inc\MinOZW.h" />
-    <ClInclude Include="inc\MinOZW.h" />
+    <ClCompile Include="TestOZW.cpp" />
   </ItemGroup>
 </Project>

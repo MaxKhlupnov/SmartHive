@@ -55,7 +55,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <ConfigurationType>Makefile</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -67,36 +67,30 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <RemoteBuildCommandLine>cmake</RemoteBuildCommandLine>
+    <NMakeIncludeSearchPath>C:\PROJECTS\GitHub\SmartHive\SmartHive.ZWaveModule\inc;C:\PROJECTS\GitHub\SmartHive\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
-    <RemoteBuildCommandLine>cmake</RemoteBuildCommandLine>
+    <NMakeIncludeSearchPath>C:\PROJECTS\GitHub\SmartHive\SmartHive.ZWaveModule\inc;C:\PROJECTS\GitHub\SmartHive\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <RemoteBuildCommandLine>cmake</RemoteBuildCommandLine>
+    <NMakeIncludeSearchPath>C:\PROJECTS\GitHub\SmartHive\SmartHive.ZWaveModule\inc;C:\PROJECTS\GitHub\SmartHive\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <IncludePath>C:\PROJECTS\GitHub\SmartHive\SmartHive.ZWaveModule\inc;$(IncludePath)</IncludePath>
+    <SourcePath>C:\PROJECTS\GitHub\SmartHive\SmartHive.ZWaveModule\inc;C:\PROJECTS\GitHub\SmartHive\SmartHive.ZWaveModule\src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <RemoteBuildCommandLine>cmake</RemoteBuildCommandLine>
+    <NMakeIncludeSearchPath>C:\PROJECTS\GitHub\SmartHive\SmartHive.ZWaveModule\inc;C:\PROJECTS\GitHub\SmartHive\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-    <RemoteBuildCommandLine>cmake</RemoteBuildCommandLine>
+    <NMakeIncludeSearchPath>C:\PROJECTS\GitHub\SmartHive\SmartHive.ZWaveModule\inc;C:\PROJECTS\GitHub\SmartHive\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
-    <RemoteBuildCommandLine>cmake</RemoteBuildCommandLine>
+    <NMakeIncludeSearchPath>C:\PROJECTS\GitHub\SmartHive\SmartHive.ZWaveModule\inc;C:\PROJECTS\GitHub\SmartHive\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
   </PropertyGroup>
   <ItemGroup>
-    <Text Include="CMakeLists.txt" />
+    <ClInclude Include="TestOZW.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="dependencies.cmake" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="inc\MinOZW.h" />
-    <ClInclude Include="inc\MinOzw.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\MinOzw.cpp" />
-    <ClCompile Include="src\MinOZW.cpp" />
+    <ClCompile Include="TestOZW.cpp" />
   </ItemGroup>
   <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
