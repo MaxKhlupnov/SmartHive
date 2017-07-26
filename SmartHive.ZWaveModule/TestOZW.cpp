@@ -12,7 +12,7 @@ using namespace OpenZWave;
 
 bool temp = false;
 
- /* Sergey's comments*/
+ /* Sergey's comments */
 static uint32 g_homeId = 0;
 static bool   g_initFailed = false;
 
