@@ -27,8 +27,8 @@ typedef struct ZWAVEDEVICE_CONFIG_TAG
 	unsigned int        messagePeriod;
 } ZWAVEDEVICE_CONFIG;
 
-/*
-static void * SimulatedDevice_ParseConfigurationFromJson(const char* configuration)
+
+static void * ZwaveDevice_ParseConfigurationFromJson(const char* configuration)
 {
 	ZWAVEDEVICE_CONFIG * result;
 	if (configuration == NULL)
@@ -96,20 +96,20 @@ static void * SimulatedDevice_ParseConfigurationFromJson(const char* configurati
 	}
 	return result;
 }
-*/
+
 /*
 *    Required for all modules:  the public API and the designated implementation functions.
 */
-static const MODULE_API_1 SimulatedDevice_APIS_all =
+static const MODULE_API_1 ZwaveDevice_APIS_all =
 {
 	{ MODULE_API_VERSION_1 },
 
-	//SimulatedDevice_ParseConfigurationFromJson,
-	//SimulatedDevice_FreeConfiguration,
-	//SimulatedDevice_Create,
-	//SimulatedDevice_Destroy,
-	//SimulatedDevice_Receive,
-	//SimulatedDevice_Start
+	ZwaveDevice_ParseConfigurationFromJson //,
+	//ZwaveDevice_FreeConfiguration,
+	//ZwaveDevice_Create,
+	//ZwaveDevice_Destroy,
+	//ZwaveDevice_Receive,
+	//ZwaveDevice_Start
 };  
 
 #ifdef BUILD_MODULE_TYPE_STATIC
@@ -119,5 +119,5 @@ MODULE_EXPORT const MODULE_API* Module_GetApi(MODULE_API_VERSION gateway_api_ver
 #endif
 {
 	(void)gateway_api_version;
-	return (const MODULE_API *)&SimulatedDevice_APIS_all;
+	return (const MODULE_API *)&ZwaveDevice_APIS_all;
 }
