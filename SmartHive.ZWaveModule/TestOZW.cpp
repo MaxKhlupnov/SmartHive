@@ -262,7 +262,7 @@ int main(int argc, char* argv[])
 #elif WIN32
 	string port = "\\\\.\\COM6";
 #else
-	string port = "/dev/ttyUSB0";
+	string port = "/dev/ttyACM0";
 #endif
 	if (argc > 1)
 	{
