@@ -28,6 +28,52 @@ typedef struct ZWAVEDEVICE_CONFIG_TAG
 } ZWAVEDEVICE_CONFIG;
 
 /*Sergei's add module*/
+static void ZwaveDevice_Receive(MODULE_HANDLE moduleHandle, MESSAGE_HANDLE messageHandle)
+{
+	// Print the properties & content of the received message
+	CONSTMAP_HANDLE properties = Message_GetProperties(messageHandle);
+	if (properties != NULL)
+	{
+		const char* addr = ((ZWAVEDEVICE_DATA*)moduleHandle)->fakeMacAddress;
+
+		// We're only interested in cloud-to-device (C2D) messages addressed to
+		// this device
+		if (ConstMap_ContainsKey(properties, GW_MAC_ADDRESS_PROPERTY) == true &&
+			strcmp(addr, ConstMap_GetValue(properties, GW_MAC_ADDRESS_PROPERTY)) == 0)
+		{
+			const char* const * keys;
+			const char* const * values;
+			size_t count;
+
+			if (ConstMap_GetInternals(properties, &keys, &values, &count) == CONSTMAP_OK)
+			{
+				const CONSTBUFFER* content = Message_GetContent(messageHandle);
+				if (content != NULL)
+				{
+					(void)printf(
+						"Received a message\r\n"
+						"Properties:\r\n"
+					);
+
+					for (size_t i = 0; i < count; ++i)
+					{
+						(void)printf("  %s = %s\r\n", keys[i], values[i]);
+					}
+
+					(void)printf("Content:\r\n");
+					(void)printf("  %.*s\r\n", (int)content->size, content->buffer);
+					(void)fflush(stdout);
+				}
+			}
+		}
+
+		ConstMap_Destroy(properties);
+	}
+
+	return;
+}
+
+/*Sergei's add module*/
 static void ZwaveDevice_Destroy(MODULE_HANDLE moduleHandle)
 {
 	if (moduleHandle == NULL)
@@ -187,7 +233,7 @@ static const MODULE_API_1 ZwaveDevice_APIS_all =
 	ZwaveDevice_FreeConfiguration,
 	ZwaveDevice_Create,
 	ZwaveDevice_Destroy,
-	//ZwaveDevice_Receive,
+	ZwaveDevice_Receive//,
 	//ZwaveDevice_Start
 };  
 
