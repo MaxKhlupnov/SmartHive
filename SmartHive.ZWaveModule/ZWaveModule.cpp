@@ -28,6 +28,28 @@ typedef struct ZWAVEDEVICE_CONFIG_TAG
 } ZWAVEDEVICE_CONFIG;
 
 /*Sergei's add module*/
+static void ZwaveDevice_Destroy(MODULE_HANDLE moduleHandle)
+{
+	if (moduleHandle == NULL)
+	{
+		LogError("Attempt to destroy NULL module");
+	}
+	else
+	{
+		ZWAVEDEVICE_DATA* module_data = (ZWAVEDEVICE_DATA*)moduleHandle;
+		int result;
+
+		/* Tell thread to stop */
+		module_data->simulatedDeviceRunning = 0;
+		/* join the thread */
+		ThreadAPI_Join(module_data->simulatedDeviceThread, &result);
+		/* free module data */
+		free((void*)module_data->fakeMacAddress);
+		free(module_data);
+	}
+}
+
+/*Sergei's add module*/
 static MODULE_HANDLE ZwaveDevice_Create(BROKER_HANDLE broker, const void* configuration)
 {
 	ZWAVEDEVICE_DATA * result;
@@ -163,8 +185,8 @@ static const MODULE_API_1 ZwaveDevice_APIS_all =
 
 	ZwaveDevice_ParseConfigurationFromJson,
 	ZwaveDevice_FreeConfiguration,
-	ZwaveDevice_Create //,
-	//ZwaveDevice_Destroy,
+	ZwaveDevice_Create,
+	ZwaveDevice_Destroy,
 	//ZwaveDevice_Receive,
 	//ZwaveDevice_Start
 };  
