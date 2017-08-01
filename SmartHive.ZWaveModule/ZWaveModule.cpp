@@ -96,6 +96,160 @@ static void ZwaveDevice_Destroy(MODULE_HANDLE moduleHandle)
 }
 
 /*Sergei's add module*/
+static int ZwaveDevice_worker(void * user_data)
+{
+	ZWAVEDEVICE_DATA* module_data = (ZWAVEDEVICE_DATA*)user_data;
+	double avgTemperature = 10.0;
+	double additionalTemp = 0.0;
+	double maxSpeed = 40.0;
+
+	if (user_data != NULL)
+	{
+
+		while (module_data->simulatedDeviceRunning)
+		{
+			ThreadAPI_Sleep(module_data->messagePeriod);
+
+			MESSAGE_CONFIG newMessageCfg;
+			MAP_HANDLE newProperties = Map_Create(NULL);
+			if (newProperties == NULL)
+			{
+				LogError("Failed to create message properties");
+			}
+
+			else
+			{
+				if (Map_Add(newProperties, GW_SOURCE_PROPERTY, GW_SOURCE_BLE_TELEMETRY) != MAP_OK)
+				{
+					LogError("Failed to set source property");
+				}
+				else if (Map_Add(newProperties, GW_MAC_ADDRESS_PROPERTY, module_data->fakeMacAddress) != MAP_OK)
+				{
+					LogError("Failed to set address property");
+				}
+				else
+				{
+					char msgText[128];
+
+					newMessageCfg.sourceProperties = newProperties;
+					if ((avgTemperature + additionalTemp) > maxSpeed)
+						additionalTemp = 0.0;
+
+					if (sprintf_s(msgText, sizeof(msgText), "{\"temperature\": %.2f}", avgTemperature + additionalTemp) < 0)
+					{
+						LogError("Failed to set message text");
+					}
+					else
+					{
+						(void)printf("Device: %s, Temperature: %.2f\r\n",
+							module_data->fakeMacAddress,
+							avgTemperature + additionalTemp
+						);
+						(void)fflush(stdout);
+
+						newMessageCfg.size = strlen(msgText);
+						newMessageCfg.source = (const unsigned char*)msgText;
+
+						MESSAGE_HANDLE newMessage = Message_Create(&newMessageCfg);
+						if (newMessage == NULL)
+						{
+							LogError("Failed to create new message");
+						}
+						else
+						{
+							if (Broker_Publish(module_data->broker, (MODULE_HANDLE)module_data, newMessage) != BROKER_OK)
+							{
+								LogError("Failed to publish new message");
+							}
+
+							additionalTemp += 1.0;
+							Message_Destroy(newMessage);
+						}
+					}
+				}
+				Map_Destroy(newProperties);
+			}
+		}
+	}
+
+	return 0;
+}
+
+/*Sergei's add module*/
+static void ZwaveDevice_Start(MODULE_HANDLE moduleHandle)
+{
+	if (moduleHandle == NULL)
+	{
+		LogError("Attempt to start NULL module");
+	}
+	else
+	{
+		MESSAGE_CONFIG newMessageCfg;
+		MAP_HANDLE newProperties = Map_Create(NULL);
+		if (newProperties == NULL)
+		{
+			LogError("Failed to create message properties");
+		}
+		else
+		{
+			ZWAVEDEVICE_DATA* module_data = (ZWAVEDEVICE_DATA*)moduleHandle;
+
+			if (Map_Add(newProperties, GW_SOURCE_PROPERTY, GW_SOURCE_BLE_TELEMETRY) != MAP_OK)
+			{
+				LogError("Failed to set source property");
+			}
+			else if (Map_Add(newProperties, GW_MAC_ADDRESS_PROPERTY, module_data->fakeMacAddress) != MAP_OK)
+			{
+				LogError("Failed to set address property");
+			}
+			else if (Map_Add(newProperties, "deviceFunction", "register") != MAP_OK)
+			{
+				LogError("Failed to set deviceFunction property");
+			}
+
+			else
+			{
+				newMessageCfg.size = 0;
+				newMessageCfg.source = NULL;
+				newMessageCfg.sourceProperties = newProperties;
+
+				MESSAGE_HANDLE newMessage = Message_Create(&newMessageCfg);
+				if (newMessage == NULL)
+				{
+					LogError("Failed to create register message");
+				}
+				else
+				{
+					if (Broker_Publish(module_data->broker, (MODULE_HANDLE)module_data, newMessage) != BROKER_OK)
+					{
+						LogError("Failed to publish register message");
+					}
+
+					Message_Destroy(newMessage);
+				}
+			}
+		}
+		Map_Destroy(newProperties);
+
+		ZWAVEDEVICE_DATA* module_data = (ZWAVEDEVICE_DATA*)moduleHandle;
+		/* OK to start */
+		/* Create a fake data thread.  */
+		if (ThreadAPI_Create(
+			&(module_data->simulatedDeviceThread),
+			ZwaveDevice_worker,
+			(void*)module_data) != THREADAPI_OK)
+		{
+			LogError("ThreadAPI_Create failed");
+			module_data->simulatedDeviceThread = NULL;
+		}
+		else
+		{
+			/* Thread started, module created, all complete.*/
+		}
+	}
+}
+
+/*Sergei's add module*/
 static MODULE_HANDLE ZwaveDevice_Create(BROKER_HANDLE broker, const void* configuration)
 {
 	ZWAVEDEVICE_DATA * result;
@@ -233,8 +387,8 @@ static const MODULE_API_1 ZwaveDevice_APIS_all =
 	ZwaveDevice_FreeConfiguration,
 	ZwaveDevice_Create,
 	ZwaveDevice_Destroy,
-	ZwaveDevice_Receive//,
-	//ZwaveDevice_Start
+	ZwaveDevice_Receive,
+	ZwaveDevice_Start
 };  
 
 #ifdef BUILD_MODULE_TYPE_STATIC
