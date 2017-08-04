@@ -79,7 +79,84 @@ static void ZwaveDevice_Destroy(MODULE_HANDLE moduleHandle)
 		free(module_data);
 	}
 }
+static int ZwaveDevice_worker(void * user_data)
+{
+	ZWAVEDEVICE_DATA* module_data = (ZWAVEDEVICE_DATA*)user_data;
+	double avgTemperature = 10.0;
+	double additionalTemp = 0.0;
+	double maxSpeed = 40.0;
 
+	if (user_data != NULL)
+	{
+
+		while (module_data->zwaveDeviceRunning)
+		{
+			ThreadAPI_Sleep(module_data->messagePeriod);
+
+			MESSAGE_CONFIG newMessageCfg;
+			MAP_HANDLE newProperties = Map_Create(NULL);
+			if (newProperties == NULL)
+			{
+				LogError("Failed to create message properties");
+			}
+
+			else
+			{
+				if (Map_Add(newProperties, GW_SOURCE_PROPERTY, GW_SOURCE_BLE_TELEMETRY) != MAP_OK)
+				{
+					LogError("Failed to set source property");
+				}
+				else if (Map_Add(newProperties, GW_MAC_ADDRESS_PROPERTY, module_data->zwaveNodeAddress) != MAP_OK)
+				{
+					LogError("Failed to set address property");
+				}
+				else
+				{
+					char msgText[128];
+
+					newMessageCfg.sourceProperties = newProperties;
+					if ((avgTemperature + additionalTemp) > maxSpeed)
+						additionalTemp = 0.0;
+
+					if (sprintf_s(msgText, sizeof(msgText), "{\"temperature\": %.2f}", avgTemperature + additionalTemp) < 0)
+					{
+						LogError("Failed to set message text");
+					}
+					else
+					{
+						(void)printf("Device: %s, Temperature: %.2f\r\n",
+							module_data->zwaveNodeAddress,
+							avgTemperature + additionalTemp
+						);
+						(void)fflush(stdout);
+
+						newMessageCfg.size = strlen(msgText);
+						newMessageCfg.source = (const unsigned char*)msgText;
+
+						MESSAGE_HANDLE newMessage = Message_Create(&newMessageCfg);
+						if (newMessage == NULL)
+						{
+							LogError("Failed to create new message");
+						}
+						else
+						{
+							if (Broker_Publish(module_data->broker, (MODULE_HANDLE)module_data, newMessage) != BROKER_OK)
+							{
+								LogError("Failed to publish new message");
+							}
+
+							additionalTemp += 1.0;
+							Message_Destroy(newMessage);
+						}
+					}
+				}
+				Map_Destroy(newProperties);
+			}
+		}
+	}
+
+	return 0;
+}
 static void ZwaveDevice_Start(MODULE_HANDLE moduleHandle) 
 {
 	if (moduleHandle == NULL)
@@ -136,14 +213,13 @@ static void ZwaveDevice_Start(MODULE_HANDLE moduleHandle)
 		Map_Destroy(newProperties);
 
 		ZWAVEDEVICE_DATA* module_data = (ZWAVEDEVICE_DATA*)moduleHandle;
-		OpenZWaveAdapter* adapter = new OpenZWaveAdapter(module_data);
 		/* OK to start */
+		OpenZWaveAdapter* adapter = new OpenZWaveAdapter(module_data);		
 		adapter->Start();
 		
 	/*	if (ThreadAPI_Create(
-			&(module_data->zwaveDeviceThread),
-			adapter->OnNotification,
-			//zwave_device_worker,
+			&(module_data->zwaveDeviceThread),			
+			ZwaveDevice_worker,
 			(void*)module_data) != THREADAPI_OK)
 		{
 			LogError("ThreadAPI_Create failed");
@@ -151,7 +227,7 @@ static void ZwaveDevice_Start(MODULE_HANDLE moduleHandle)
 		}
 		else
 		{
-			/Thread started, module created, all complete. /
+			//Thread started, module created, all complete. 
 		}*/
 	}
 }

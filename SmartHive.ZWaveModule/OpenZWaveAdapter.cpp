@@ -55,6 +55,7 @@ void OpenZWaveAdapter::Start() {
 	Options::Get()->Lock();
 
 	Manager::Create();
+	
 }
 
 //-----------------------------------------------------------------------------

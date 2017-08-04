@@ -81,8 +81,9 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>../iot-edge/build/core;</LibraryPath>
+    <LibraryPath>../iot-edge/build/core;/home/makhlu/projects/SmartHive.ZWaveModule/bin/x64/Debug;</LibraryPath>
     <IncludePath>$(IncludePath);$(ISenseIncludePath);../include;../iot-edge/install-deps/include;../iot-edge/install-deps/include/azureiot;../iot-edge/install-deps/include/azureiot/azure_c_shared_utility;../iot-edge/core/inc;../iot-edge/modules/common;</IncludePath>
+    <SourcePath>$(SolutionDir)SmartHive.ZWaveModule</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <IncludePath>$(IncludePath);$(ISenseIncludePath);../include;../iot-edge/install-deps/include;../iot-edge/install-deps/include/azureiot;../iot-edge/install-deps/include/azureiot/azure_c_shared_utility;../iot-edge/core/inc;../iot-edge/modules/common;</IncludePath>
@@ -95,7 +96,11 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
       <LibraryDependencies>gateway;aziotsharedutil;</LibraryDependencies>
+      <VerboseOutput>true</VerboseOutput>
     </Link>
+    <ClCompile>
+      <Verbose>true</Verbose>
+    </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

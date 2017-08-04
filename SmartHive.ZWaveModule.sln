@@ -3,12 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmartHive.ZWaveModule", "SmartHive.ZWaveModule.vcxproj", "{9ACE489E-2E23-4897-AC5C-97AE9605A092}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmartHive.ZWaveModule", ".\SmartHive.ZWaveModule\SmartHive.ZWaveModule.vcxproj", "{9ACE489E-2E23-4897-AC5C-97AE9605A092}"
 	ProjectSection(ProjectDependencies) = postProject
 		{8884DBF5-AED5-4910-B4DC-DC97DAFD29AC} = {8884DBF5-AED5-4910-B4DC-DC97DAFD29AC}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmartHive.ZWaveGateway", "..\SmartHive.ZWaveGateway\SmartHive.ZWaveGateway.vcxproj", "{8884DBF5-AED5-4910-B4DC-DC97DAFD29AC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmartHive.ZWaveGateway", ".\SmartHive.ZWaveGateway\SmartHive.ZWaveGateway.vcxproj", "{8884DBF5-AED5-4910-B4DC-DC97DAFD29AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
