@@ -39,7 +39,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -47,7 +47,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -55,7 +55,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -68,45 +68,44 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <NMakeIncludeSearchPath>C:\PROJECTS\GitHub\SmartHive\SmartHive.ZWaveModule\inc;C:\PROJECTS\GitHub\SmartHive\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
-    <IncludePath>../open-zwave/cpp/src;../include;../iot-edge/install-deps/include;../iot-edge/install-deps/include/azureiot;../iot-edge/install-deps/include/azureiot/azure_c_shared_utility;../iot-edge/install-deps/include/azureiot/azure_uamqp_c;../iot-edge/install-deps/include/azureiot/azure_umqtt_c;../iot-edge/core/inc;../iot-edge/modules/common;../include/x86_64-linux-gnu/bits;$(IncludePath)</IncludePath>
-    <LibraryPath>../iot-edge/build/core;</LibraryPath>
+    <IncludePath>../open-zwave/cpp/src;../include/azure_c_shared_utility;../include;../iot-edge/install-deps/include;../iot-edge/install-deps/include/azureiot;../iot-edge/install-deps/include/azureiot/azure_c_shared_utility;../iot-edge/install-deps/include/azureiot/azure_uamqp_c;../iot-edge/install-deps/include/azureiot/azure_umqtt_c;../iot-edge/core/inc;../iot-edge/modules/common;../include/x86_64-linux-gnu/bits;../parson;../open-zwave/cpp/src/command_classes;$(IncludePath)</IncludePath>
+    <LibraryPath>~/projects/iot-edge/build/core;/usr/lib/arm-linux-gnueabihf;</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
-    <TargetExt>.so</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <NMakeIncludeSearchPath>C:\PROJECTS\GitHub\SmartHive\SmartHive.ZWaveModule\inc;C:\PROJECTS\GitHub\SmartHive\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <NMakeIncludeSearchPath>C:\PROJECTS\GitHub\SmartHive\SmartHive.ZWaveModule\inc;C:\PROJECTS\GitHub\SmartHive\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
-    <IncludePath>../open-zwave/cpp/src;../include;../iot-edge/install-deps/include;../iot-edge/install-deps/include/azureiot;../iot-edge/install-deps/include/azureiot/azure_c_shared_utility;../iot-edge/install-deps/include/azureiot/azure_uamqp_c;../iot-edge/install-deps/include/azureiot/azure_umqtt_c;../iot-edge/core/inc;../iot-edge/modules/common;../include/x86_64-linux-gnu/bits;$(IncludePath)</IncludePath>
+    <IncludePath>../open-zwave/cpp/src;../include/azure_c_shared_utility;../include;../iot-edge/install-deps/include;../iot-edge/install-deps/include/azureiot;../iot-edge/install-deps/include/azureiot/azure_c_shared_utility;../iot-edge/install-deps/include/azureiot/azure_uamqp_c;../iot-edge/install-deps/include/azureiot/azure_umqtt_c;../iot-edge/core/inc;../iot-edge/modules/common;../include/x86_64-linux-gnu/bits;../parson;$(IncludePath)</IncludePath>
     <SourcePath>$(SourcePath)</SourcePath>
     <LibraryPath>../iot-edge/build/core;</LibraryPath>
-    <TargetExt>.so</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <NMakeIncludeSearchPath>C:\PROJECTS\GitHub\SmartHive\SmartHive.ZWaveModule\inc;C:\PROJECTS\GitHub\SmartHive\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <NMakeIncludeSearchPath>C:\PROJECTS\GitHub\SmartHive\SmartHive.ZWaveModule\inc;C:\PROJECTS\GitHub\SmartHive\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
-    <IncludePath>../open-zwave/cpp/src;../include;../iot-edge/install-deps/include;../iot-edge/install-deps/include/azureiot;../iot-edge/install-deps/include/azureiot/azure_c_shared_utility;../iot-edge/install-deps/include/azureiot/azure_uamqp_c;../iot-edge/install-deps/include/azureiot/azure_umqtt_c;../iot-edge/core/inc;../iot-edge/modules/common;../include/x86_64-linux-gnu/bits;$(IncludePath)</IncludePath>
-    <LibraryPath>../iot-edge/build/core;</LibraryPath>
+    <IncludePath>../open-zwave/cpp/src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
     <NMakeIncludeSearchPath>C:\PROJECTS\GitHub\SmartHive\SmartHive.ZWaveModule\inc;C:\PROJECTS\GitHub\SmartHive\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
   </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="OpenZWaveAdapter.h" />
+    <ClInclude Include="TestOZW.h" />
+    <ClInclude Include="ZWaveGateway.h" />
     <ClInclude Include="ZWaveModule.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OpenZWaveAdapter.cpp" />
+    <ClCompile Include="TestOZW.cpp" />
+    <ClCompile Include="ZWaveGateway.cpp" />
     <ClCompile Include="ZWaveModule.cpp" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <ShowIncludes>true</ShowIncludes>
-      <PositionIndependentCode>true</PositionIndependentCode>
-      <Verbose>true</Verbose>
     </ClCompile>
     <Link />
     <Link>
@@ -117,19 +116,10 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>
       <Verbose>true</Verbose>
-      <PositionIndependentCode>true</PositionIndependentCode>
-      <ShowIncludes>true</ShowIncludes>
     </ClCompile>
     <Link>
       <LibraryDependencies>gateway;openzwave;pthread;aziotsharedutil;iothub_client;iothub_client_amqp_transport;uuid;%(LibraryDependencies)</LibraryDependencies>
     </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-    <ClCompile>
-      <PositionIndependentCode>true</PositionIndependentCode>
-      <Verbose>true</Verbose>
-      <ShowIncludes>true</ShowIncludes>
-    </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

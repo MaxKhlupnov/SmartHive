@@ -1,0 +1,35 @@
+{
+  "modules": [
+    {
+      "name": "ZWaveModule",
+      "loader": {
+        "name": "native",
+        "entrypoint": {
+          "module.path": "../../../../SmartHive.ZWaveModule/bin/x64/Debug/libSmartHive.ZWaveModule.so"
+        }
+      },
+      "args": {
+        "macAddress": "01:01:01:01:01:01",
+        "messagePeriod": 2000
+      }
+    },
+    {
+      "name": "Logger",
+      "loader": {
+        "name": "native",
+        "entrypoint": {
+          "module.path": "../../../../iot-edge/build/modules/logger/liblogger.so"
+        }
+      },
+      "args": {
+        "filename": "deviceCloudUploadGatewaylog.log"
+      }
+    }
+  ],
+  "links": [
+    {
+      "source": "*",
+      "sink": "Logger"
+    }
+  ]
+}
