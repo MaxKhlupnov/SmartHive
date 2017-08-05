@@ -10,6 +10,7 @@ typedef struct ZWAVEDEVICE_DATA_TAG
 	BROKER_HANDLE       broker;
 	THREAD_HANDLE       zwaveDeviceThread;
 	const char *        zwaveNodeAddress;
+	const char *        controllerPath;
 	unsigned int        messagePeriod;
 	unsigned int        zwaveDeviceRunning : 1;
 } ZWAVEDEVICE_DATA;
@@ -18,6 +19,7 @@ typedef struct ZWAVEDEVICE_DATA_TAG
 typedef struct ZWAVEDEVICE_CONFIG_TAG
 {
 	char *              macAddress;
+	char *              controllerPath;
 	unsigned int        messagePeriod;
 } ZWAVEDEVICE_CONFIG;
 

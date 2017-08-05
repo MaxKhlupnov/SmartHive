@@ -15,16 +15,22 @@ typedef struct
 	list<ValueID>	m_values;
 }NodeInfo;
 
+static pthread_cond_t  initCond = PTHREAD_COND_INITIALIZER;
+static uint32 g_homeId = 0;
+static bool   g_initFailed = false;
+static list<NodeInfo*> g_nodes;
+
 class OpenZWaveAdapter
 {
 public:
 	OpenZWaveAdapter(ZWAVEDEVICE_DATA* module_data);
 	~OpenZWaveAdapter();
-	void OnNotification(Notification const* _notification, void* _context);
+	static void OnNotification(Notification const* _notification, void* _context);
 	void Start();
 private:
 	ZWAVEDEVICE_DATA* module_handle;
 	pthread_mutex_t g_criticalSection;
 	pthread_mutex_t initMutex = PTHREAD_MUTEX_INITIALIZER;
+	
 };
 

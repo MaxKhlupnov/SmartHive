@@ -8,10 +8,11 @@
           "module.path": "../../../../SmartHive.ZWaveModule/bin/x64/Debug/libSmartHive.ZWaveModule.so"
         }
       },
-      "args": {
-        "macAddress": "01:01:01:01:01:01",
-        "messagePeriod": 2000
-      }
+					"args": {
+						"macAddress": "01:01:01:01:01:01",
+						"controllerPath": "/dev/tty1",
+						"messagePeriod": 2000
+					}
     },
     {
       "name": "Logger",
@@ -27,9 +28,9 @@
     }
   ],
   "links": [
-    {
-      "source": "*",
-      "sink": "Logger"
-    }
+			{
+				"source": "ZWaveModule",
+				"sink": "Logger"
+			}
   ]
 }

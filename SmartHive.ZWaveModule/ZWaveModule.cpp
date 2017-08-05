@@ -266,6 +266,7 @@ static MODULE_HANDLE ZwaveDevice_Create(BROKER_HANDLE broker, const void* config
 			else
 			{
 				result->zwaveNodeAddress = newFakeAddress;
+				result->controllerPath = config->controllerPath;
 				result->messagePeriod = config->messagePeriod;
 				result->zwaveDeviceThread = NULL;
 
@@ -313,39 +314,58 @@ static void * ZwaveDevice_ParseConfigurationFromJson(const char* configuration)
 			else
 			{
 				ZWAVEDEVICE_CONFIG config;
-				const char* macAddress = json_object_get_string(root, "macAddress");
-				if (macAddress == NULL)
+				const char* controllerPath = json_object_get_string(root, "controllerPath");				
+				if (controllerPath == NULL)
 				{
-					LogError("unable to json_object_get_string");
+					LogError("unable to json_object_get_string controllerPath");
 					result = NULL;
 				}
 				else
 				{
-					int period = (int)json_object_get_number(root, "messagePeriod");
-					if (period <= 0)
+					
+					if (mallocAndStrcpy_s(&(config.controllerPath), controllerPath) != 0)
 					{
-						LogError("Invalid period time specified");
+						LogError("Error allocating memory for controllerPath string");
 						result = NULL;
 					}
-					else
-					{
-						if (mallocAndStrcpy_s(&(config.macAddress), macAddress) != 0)
-						{
-							result = NULL;
-						}
-						else
-						{
-							config.messagePeriod = period;
-							result = (ZWAVEDEVICE_CONFIG*)malloc(sizeof(ZWAVEDEVICE_CONFIG));
-							if (result == NULL) {
-								free(config.macAddress);
-								LogError("allocation of configuration failed");
-							}
-							else
-							{
-								*result = config;
-							}
-						}
+					else {						
+								const char* macAddress = json_object_get_string(root, "macAddress");
+								if (macAddress == NULL)
+								{
+									LogError("unable to json_object_get_string");
+									result = NULL;
+								}
+								else
+								{
+									int period = (int)json_object_get_number(root, "messagePeriod");
+									if (period <= 0)
+									{
+										LogError("Invalid period time specified");
+										result = NULL;
+									}
+									else
+									{
+										if (mallocAndStrcpy_s(&(config.macAddress), macAddress) != 0)
+										{
+											result = NULL;
+										}
+										else
+										{
+											config.messagePeriod = period;
+											result = (ZWAVEDEVICE_CONFIG*)malloc(sizeof(ZWAVEDEVICE_CONFIG));
+											if (result == NULL) {
+												free(config.macAddress);
+												free(config.controllerPath);
+												LogError("allocation of configuration failed");
+											}
+											else
+											{
+												*result = config;												
+												LogInfo("Zwave config: controllerPath->%s macAddress->%s\n",config.controllerPath, config.macAddress);												
+											}
+										}
+									}
+								}
 					}
 				}
 			}
