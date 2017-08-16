@@ -81,13 +81,14 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>../iot-edge/build/core;/home/makhlu/projects/SmartHive.ZWaveModule/bin/x64/Debug;</LibraryPath>
-    <IncludePath>$(IncludePath);$(ISenseIncludePath);../include;../iot-edge/install-deps/include;../iot-edge/install-deps/include/azureiot;../iot-edge/install-deps/include/azureiot/azure_c_shared_utility;../iot-edge/core/inc;../iot-edge/modules/common;</IncludePath>
+    <LibraryPath>../iot-edge/build/core;/home/Sergei/projects/SmartHive.ZWaveGateway/obj/x64/Debug;</LibraryPath>
+    <IncludePath>$(IncludePath);$(ISenseIncludePath);../include;../include/azure_c_shared_utility;../iot-edge/deps/nanomsg/src;../iot-edge/install-deps/include;../iot-edge/install-deps/include/azureiot;../iot-edge/install-deps/include/azureiot/azure_c_shared_utility;../iot-edge/core/inc;../iot-edge/modules/common;../iot-edge/core/inc;</IncludePath>
     <SourcePath>$(SolutionDir)SmartHive.ZWaveModule</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <IncludePath>$(IncludePath);$(ISenseIncludePath);../include;../iot-edge/install-deps/include;../iot-edge/install-deps/include/azureiot;../iot-edge/install-deps/include/azureiot/azure_c_shared_utility;../iot-edge/core/inc;../iot-edge/modules/common;</IncludePath>
-    <LibraryPath>../iot-edge/build/core;</LibraryPath>
+    <IncludePath>$(IncludePath);$(ISenseIncludePath);../include;../include/azure_c_shared_utility;../iot-edge/deps;../iot-edge/core/inc;../iot-edge/install-deps/include;../iot-edge/install-deps/include/azureiot;../iot-edge/install-deps/include/azureiot/azure_c_shared_utility;../iot-edge/core/inc;../iot-edge/modules/common;</IncludePath>
+    <LibraryPath>../iot-edge/core/inc;../iot-edge/build/core;/home/mtc/projects/SmartHive.ZWaveGateway/bin/ARM/Debug</LibraryPath>
+    <SourcePath>$(SolutionDir)SmartHive.ZWaveModule</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <IncludePath>$(IncludePath);$(ISenseIncludePath);../include;../iot-edge/install-deps/include;../iot-edge/core/inc;</IncludePath>
@@ -101,6 +102,15 @@
     <ClCompile>
       <Verbose>true</Verbose>
     </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <ClCompile>
+      <Verbose>true</Verbose>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>gateway;aziotsharedutil;pthread;crypto;ssl;uuid</LibraryDependencies>
+      <VerboseOutput>true</VerboseOutput>
+    </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
