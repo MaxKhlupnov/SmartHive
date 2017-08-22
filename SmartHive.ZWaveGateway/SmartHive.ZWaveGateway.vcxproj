@@ -84,6 +84,7 @@
     <LibraryPath>../iot-edge/build/core;/home/makhlu/projects/SmartHive.ZWaveModule/bin/x64/Debug;</LibraryPath>
     <IncludePath>$(IncludePath);$(ISenseIncludePath);../include;../iot-edge/install-deps/include;../iot-edge/install-deps/include/azureiot;../iot-edge/install-deps/include/azureiot/azure_c_shared_utility;../iot-edge/core/inc;../iot-edge/modules/common;</IncludePath>
     <SourcePath>$(SolutionDir)SmartHive.ZWaveModule</SourcePath>
+    <AdditionalSourcesToCopyMapping>C:\PROJECTS\GitHub\SmartHive\SmartHive.ZWaveModule:=/home/makhlu/projects/SmartHive.ZWaveGateway;</AdditionalSourcesToCopyMapping>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <IncludePath>$(IncludePath);$(ISenseIncludePath);../include;../iot-edge/install-deps/include;../iot-edge/install-deps/include/azureiot;../iot-edge/install-deps/include/azureiot/azure_c_shared_utility;../iot-edge/core/inc;../iot-edge/modules/common;</IncludePath>
@@ -101,6 +102,11 @@
     <ClCompile>
       <Verbose>true</Verbose>
     </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <Link>
+      <LibraryDependencies>gateway;aziotsharedutil;pthread;crypto;ssl;uuid;</LibraryDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

@@ -1,5 +1,5 @@
 #include "OpenZWaveAdapter.h"
-
+#include "azure_c_shared_utility/threadapi.h"
 #include <unistd.h>
 #include <stdlib.h>
 
@@ -14,6 +14,7 @@
 #include "platform/Log.h"
 #include "azure_c_shared_utility/xlogging.h"
 #include "broker.h"
+#include "messageproperties.h"
 
 using namespace OpenZWave;
 
@@ -44,7 +45,7 @@ OpenZWaveAdapter::~OpenZWaveAdapter()
 
 void OpenZWaveAdapter::Start() {
 
-	pthread_mutex_lock(&g_criticalSection);
+	//pthread_mutex_lock(&g_criticalSection);
 
 	printf("Starting SmartHive.ZWaveModule with OpenZWave Version %s\n", Manager::getVersionAsString().c_str());
 
@@ -82,7 +83,7 @@ void OpenZWaveAdapter::Start() {
 		Manager::Get()->AddDriver(port);
 	}
 	
-	pthread_mutex_unlock(&g_criticalSection);
+	//pthread_mutex_unlock(&g_criticalSection);
 }
 
 //-----------------------------------------------------------------------------
@@ -99,7 +100,7 @@ void OpenZWaveAdapter::OnNotification
 
 	OpenZWaveAdapter* context = (OpenZWaveAdapter*)_context;
 	// Must do this inside a critical section to avoid conflicts with the main thread
-	pthread_mutex_lock(&context->g_criticalSection);
+	//pthread_mutex_lock(&context->g_criticalSection);
 
 	printf("--in locking section");
 
@@ -114,6 +115,6 @@ void OpenZWaveAdapter::OnNotification
 	{
 		//TODO: Fill message properties from Notification objet and snd the message
 	}
-	pthread_mutex_unlock(&context->g_criticalSection);
+	//pthread_mutex_unlock(&context->g_criticalSection);
 	printf("--lock relased");
 }

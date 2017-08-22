@@ -61,6 +61,7 @@ static void ZwaveDevice_Receive(MODULE_HANDLE moduleHandle, MESSAGE_HANDLE messa
 
 static void ZwaveDevice_Destroy(MODULE_HANDLE moduleHandle)
 {
+	LogInfo("ZwaveDevice_Destroy call..");
 	if (moduleHandle == NULL)
 	{
 		LogError("Attempt to destroy NULL module");
@@ -73,15 +74,16 @@ static void ZwaveDevice_Destroy(MODULE_HANDLE moduleHandle)
 		/* Tell thread to stop */
 		module_data->zwaveDeviceRunning = 0;
 		/* join the thread */
-		ThreadAPI_Join(module_data->zwaveDeviceThread, &result);
+		//ThreadAPI_Join(module_data->zwaveAdapter, &result);
 		/* free module data */
 		free((void*)module_data->zwaveNodeAddress);
 		free(module_data);
 	}
 }
 
-static void ZwaveDevice_Start(MODULE_HANDLE moduleHandle) 
+static void ZwaveDevice_Start(MODULE_HANDLE moduleHandle)
 {
+	LogInfo("ZwaveDevice_Start call..");
 	if (moduleHandle == NULL)
 	{
 		LogError("Attempt to start NULL module");
@@ -137,26 +139,31 @@ static void ZwaveDevice_Start(MODULE_HANDLE moduleHandle)
 
 		ZWAVEDEVICE_DATA* module_data = (ZWAVEDEVICE_DATA*)moduleHandle;
 		/* OK to start */
-		OpenZWaveAdapter* adapter = new OpenZWaveAdapter(module_data);		
+		OpenZWaveAdapter* adapter = (OpenZWaveAdapter*)malloc(sizeof(OpenZWaveAdapter));
+		adapter = new OpenZWaveAdapter(module_data);
 		adapter->Start();
-		
-	/*	if (ThreadAPI_Create(
-			&(module_data->zwaveDeviceThread),			
-			ZwaveDevice_worker,
-			(void*)module_data) != THREADAPI_OK)
+
+		LogInfo("Working thread %s sucessfully started for controller %s\n", module_data->zwaveDeviceThread, module_data->controllerPath);
+
+		/*	if (ThreadAPI_Create(
+		&(module_data->zwaveDeviceThread),
+		adapter->Start,
+		(void*)module_data) != THREADAPI_OK)
 		{
-			LogError("ThreadAPI_Create failed");
-			module_data->zwaveDeviceThread = NULL;
+		LogError("ThreadAPI_Create failed");
+		module_data->zwaveDeviceThread = NULL;
 		}
 		else
 		{
-			//Thread started, module created, all complete. 
+		LogInfo("Working thread %s sucessfully started for controller %s\n", module_data->zwaveDeviceThread, module_data->controllerPath);
+		//Thread started, module created, all complete.
 		}*/
 	}
 }
 
 static MODULE_HANDLE ZwaveDevice_Create(BROKER_HANDLE broker, const void* configuration)
 {
+	LogInfo("ZwaveDevice_Create call..");
 	ZWAVEDEVICE_DATA * result;
 	ZWAVEDEVICE_CONFIG * config = (ZWAVEDEVICE_CONFIG *)configuration;
 	if (broker == NULL || config == NULL)
@@ -166,6 +173,7 @@ static MODULE_HANDLE ZwaveDevice_Create(BROKER_HANDLE broker, const void* config
 	}
 	else
 	{
+
 		/* allocate module data struct */
 		result = (ZWAVEDEVICE_DATA*)malloc(sizeof(ZWAVEDEVICE_DATA));
 		if (result == NULL)
@@ -174,29 +182,22 @@ static MODULE_HANDLE ZwaveDevice_Create(BROKER_HANDLE broker, const void* config
 		}
 		else
 		{
+
 			/* save the message broker */
 			result->broker = broker;
 			/* set module is running to true */
 			result->zwaveDeviceRunning = 1;
-			/* save fake MacAddress */
-			char * newFakeAddress;
-			int status = mallocAndStrcpy_s(&newFakeAddress, config->macAddress);
 
-			if (status != 0)
-			{
-				LogError("MacAddress did not copy");
-			}
-			else
-			{
-				result->zwaveNodeAddress = newFakeAddress;
-				result->controllerPath = config->controllerPath;
-				result->messagePeriod = config->messagePeriod;
-				result->zwaveDeviceThread = NULL;
-
-			}
-
+			result->zwaveNodeAddress = config->macAddress;
+			result->controllerPath = config->controllerPath;
+			result->messagePeriod = config->messagePeriod;
+			result->zwaveDeviceThread = NULL;
+			LogInfo("Created ZWave Device: controllerPath->%s macAddress->%s\n", result->controllerPath, result->zwaveNodeAddress);
 		}
 	}
+
+
+
 	return result;
 }
 
@@ -237,7 +238,7 @@ static void * ZwaveDevice_ParseConfigurationFromJson(const char* configuration)
 			else
 			{
 				ZWAVEDEVICE_CONFIG config;
-				const char* controllerPath = json_object_get_string(root, "controllerPath");				
+				const char* controllerPath = json_object_get_string(root, "controllerPath");
 				if (controllerPath == NULL)
 				{
 					LogError("unable to json_object_get_string controllerPath");
@@ -245,50 +246,50 @@ static void * ZwaveDevice_ParseConfigurationFromJson(const char* configuration)
 				}
 				else
 				{
-					
+
 					if (mallocAndStrcpy_s(&(config.controllerPath), controllerPath) != 0)
 					{
 						LogError("Error allocating memory for controllerPath string");
 						result = NULL;
 					}
-					else {						
-								const char* macAddress = json_object_get_string(root, "macAddress");
-								if (macAddress == NULL)
+					else {
+						const char* macAddress = json_object_get_string(root, "macAddress");
+						if (macAddress == NULL)
+						{
+							LogError("unable to json_object_get_string");
+							result = NULL;
+						}
+						else
+						{
+							int period = (int)json_object_get_number(root, "messagePeriod");
+							if (period <= 0)
+							{
+								LogError("Invalid period time specified");
+								result = NULL;
+							}
+							else
+							{
+								if (mallocAndStrcpy_s(&(config.macAddress), macAddress) != 0)
 								{
-									LogError("unable to json_object_get_string");
 									result = NULL;
 								}
 								else
 								{
-									int period = (int)json_object_get_number(root, "messagePeriod");
-									if (period <= 0)
-									{
-										LogError("Invalid period time specified");
-										result = NULL;
+									config.messagePeriod = period;
+									result = (ZWAVEDEVICE_CONFIG*)malloc(sizeof(ZWAVEDEVICE_CONFIG));
+									if (result == NULL) {
+										free(config.macAddress);
+										free(config.controllerPath);
+										LogError("allocation of configuration failed");
 									}
 									else
 									{
-										if (mallocAndStrcpy_s(&(config.macAddress), macAddress) != 0)
-										{
-											result = NULL;
-										}
-										else
-										{
-											config.messagePeriod = period;
-											result = (ZWAVEDEVICE_CONFIG*)malloc(sizeof(ZWAVEDEVICE_CONFIG));
-											if (result == NULL) {
-												free(config.macAddress);
-												free(config.controllerPath);
-												LogError("allocation of configuration failed");
-											}
-											else
-											{
-												*result = config;												
-												LogInfo("Zwave config: controllerPath->%s macAddress->%s\n",config.controllerPath, config.macAddress);												
-											}
-										}
+										*result = config;
+										LogInfo("Zwave device config record: controllerPath->%s macAddress->%s\n", config.controllerPath, config.macAddress);
 									}
 								}
+							}
+						}
 					}
 				}
 			}
@@ -311,7 +312,7 @@ static const MODULE_API_1 ZwaveDevice_APIS_all =
 	ZwaveDevice_Destroy,
 	ZwaveDevice_Receive,
 	ZwaveDevice_Start
-};  
+};
 
 #ifdef BUILD_MODULE_TYPE_STATIC
 MODULE_EXPORT const MODULE_API* MODULE_STATIC_GETAPI(ZWAVE_DEVICE_MODULE)(MODULE_API_VERSION gateway_api_version)
