@@ -53,7 +53,7 @@ void OpenZWaveAdapter::Start() {
 	// The first argument is the path to the config files (where the manufacturer_specific.xml file is located
 	// The second argument is the path for saved Z-Wave network state and the log file.  If you leave it NULL 
 	// the log file will appear in the program's working directory.
-	Options::Create("../../../config/", "", "");
+	Options::Create("../../../../open-zwave/config/", "", "");
 	Options::Get()->AddOptionInt("SaveLogLevel", LogLevel_Detail);
 	Options::Get()->AddOptionInt("QueueLogLevel", LogLevel_Debug);
 	Options::Get()->AddOptionInt("DumpTrigger", LogLevel_Error);
@@ -96,7 +96,8 @@ void OpenZWaveAdapter::OnNotification
 	void* _context
 )
 {
-	LogInfo("New notification %s", _notification->GetAsString());
+	LogInfo("New notification from node: %d", _notification->GetNodeId());
+
 
 	OpenZWaveAdapter* context = (OpenZWaveAdapter*)_context;
 	// Must do this inside a critical section to avoid conflicts with the main thread
