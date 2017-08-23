@@ -45,7 +45,7 @@ OpenZWaveAdapter::~OpenZWaveAdapter()
 
 void OpenZWaveAdapter::Start() {
 
-	pthread_mutex_lock(g_criticalSection);
+	//pthread_mutex_lock(g_criticalSection);
 
 	printf("Starting SmartHive.ZWaveModule with OpenZWave Version %s\n", Manager::getVersionAsString().c_str());
 
@@ -83,7 +83,7 @@ void OpenZWaveAdapter::Start() {
 		Manager::Get()->AddDriver(port);
 	}
 	
-	pthread_mutex_unlock(g_criticalSection);
+	//pthread_mutex_unlock(g_criticalSection);
 }
 
 //-----------------------------------------------------------------------------
@@ -103,7 +103,7 @@ void OpenZWaveAdapter::OnNotification
 	// Must do this inside a critical section to avoid conflicts with the main thread
 	pthread_mutex_lock(context->g_criticalSection);
 
-	printf("--in locking section");
+	LogInfo("--in locking section");
 
 	MESSAGE_CONFIG newMessageCfg;
 	MAP_HANDLE newProperties = Map_Create(NULL);
@@ -117,5 +117,5 @@ void OpenZWaveAdapter::OnNotification
 		//TODO: Fill message properties from Notification objet and snd the message
 	}
 	pthread_mutex_unlock(context->g_criticalSection);
-	printf("--lock relased");
+	LogInfo("--lock relased");
 }

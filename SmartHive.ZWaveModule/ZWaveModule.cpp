@@ -12,8 +12,25 @@
 
 #include <parson.h>
 
-/* Azur eiot-edge module definition functions*/
+static int adapter_device_worker(void * adapter_data)
+{
+	ZWAVEDEVICE_DATA* module_data = (ZWAVEDEVICE_DATA*)adapter_data;
 
+	OpenZWaveAdapter* adapter = new OpenZWaveAdapter(module_data);
+	adapter->Start();
+
+	if (adapter_data != NULL)
+	{
+
+		while (module_data->zwaveDeviceRunning)
+		{
+			ThreadAPI_Sleep(module_data->messagePeriod);
+		}
+	}
+	return 0;
+}
+
+/* Azur eiot-edge module definition functions*/
 static void ZwaveDevice_Receive(MODULE_HANDLE moduleHandle, MESSAGE_HANDLE messageHandle)
 {
 	// Print the properties & content of the received message
@@ -137,27 +154,11 @@ static void ZwaveDevice_Start(MODULE_HANDLE moduleHandle)
 		}
 		Map_Destroy(newProperties);
 
-		ZWAVEDEVICE_DATA* module_data = (ZWAVEDEVICE_DATA*)moduleHandle;
-		/* OK to start */
-		OpenZWaveAdapter* adapter = (OpenZWaveAdapter*)malloc(sizeof(OpenZWaveAdapter));
-		adapter = new OpenZWaveAdapter(module_data);
-		adapter->Start();
+	ZWAVEDEVICE_DATA* module_data = (ZWAVEDEVICE_DATA*)moduleHandle;
 
-		LogInfo("Working thread %s sucessfully started for controller %s\n", module_data->zwaveDeviceThread, module_data->controllerPath);
+		OpenZWaveAdapter* adapter = new OpenZWaveAdapter(module_data);
+		adapter->Start();	
 
-		/*	if (ThreadAPI_Create(
-		&(module_data->zwaveDeviceThread),
-		adapter->Start,
-		(void*)module_data) != THREADAPI_OK)
-		{
-		LogError("ThreadAPI_Create failed");
-		module_data->zwaveDeviceThread = NULL;
-		}
-		else
-		{
-		LogInfo("Working thread %s sucessfully started for controller %s\n", module_data->zwaveDeviceThread, module_data->controllerPath);
-		//Thread started, module created, all complete.
-		}*/
 	}
 }
 
