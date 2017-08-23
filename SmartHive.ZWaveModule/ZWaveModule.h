@@ -5,6 +5,8 @@
 #include "broker.h"
 #include "azure_c_shared_utility/threadapi.h"
 
+#define GW_SOURCE_ZWAVE_TELEMETRY     "zwaveTelemetry"
+
 typedef struct ZWAVEDEVICE_DATA_TAG 
 {
 	BROKER_HANDLE       broker;

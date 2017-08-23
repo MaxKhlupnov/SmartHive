@@ -12,24 +12,6 @@
 
 #include <parson.h>
 
-static int adapter_device_worker(void * adapter_data)
-{
-	ZWAVEDEVICE_DATA* module_data = (ZWAVEDEVICE_DATA*)adapter_data;
-
-	OpenZWaveAdapter* adapter = new OpenZWaveAdapter(module_data);
-	adapter->Start();
-
-	if (adapter_data != NULL)
-	{
-
-		while (module_data->zwaveDeviceRunning)
-		{
-			ThreadAPI_Sleep(module_data->messagePeriod);
-		}
-	}
-	return 0;
-}
-
 /* Azur eiot-edge module definition functions*/
 static void ZwaveDevice_Receive(MODULE_HANDLE moduleHandle, MESSAGE_HANDLE messageHandle)
 {

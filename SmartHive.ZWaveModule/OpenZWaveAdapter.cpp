@@ -95,9 +95,9 @@ void OpenZWaveAdapter::OnNotification
 	Notification const* _notification,
 	void* _context
 )
-{
-	LogInfo("New notification from node: %d", _notification->GetNodeId());
+{	
 
+	LogInfo("New notification %s from node: %d", _notification->GetAsString().c_str(), _notification->GetNodeId());
 
 	OpenZWaveAdapter* context = (OpenZWaveAdapter*)_context;
 	// Must do this inside a critical section to avoid conflicts with the main thread
@@ -107,15 +107,65 @@ void OpenZWaveAdapter::OnNotification
 
 	MESSAGE_CONFIG newMessageCfg;
 	MAP_HANDLE newProperties = Map_Create(NULL);
-	if (newProperties == NULL)
-	{
-		LogError("Failed to create message properties");
-	}
+		if (newProperties == NULL || context->module_handle == NULL)
+		{
+			LogError("Failed to create message properties");
+		}
+		else
+		{
+			//TODO: Fill message properties from Notification objet and snd the message
+			if (Map_Add(newProperties, GW_SOURCE_PROPERTY, GW_SOURCE_ZWAVE_TELEMETRY) != MAP_OK)
+			{
+				LogError("Failed to set source property");
+			}
+			else if (Map_Add(newProperties, GW_MAC_ADDRESS_PROPERTY, context->module_handle->zwaveNodeAddress) != MAP_OK)
+			{
+				LogError("Failed to set address property");
+			}
+			else
+			{
+				char msgText[128];
 
-	else
-	{
-		//TODO: Fill message properties from Notification objet and snd the message
-	}
+				newMessageCfg.sourceProperties = newProperties;
+
+			/*	if (sprintf_s(msgText, sizeof(msgText), "{\"Notification\": %s}", _notification->GetAsString().c_str()) < 0)
+				{
+					LogError("Failed to set message text");
+				}
+				else
+				{*/
+
+					newMessageCfg.size = strlen(msgText);
+					newMessageCfg.source = (const unsigned char*)msgText;
+
+					MESSAGE_HANDLE newMessage = Message_Create(&newMessageCfg);
+					if (newMessage == NULL)
+					{
+						LogError("Failed to create new message");
+					}
+					else
+					{
+						if (Broker_Publish(context->module_handle->broker, (MODULE_HANDLE)context->module_handle, newMessage) != BROKER_OK)
+						{
+							LogError("Failed to publish new message");
+						}
+						else 
+						{
+							LogInfo("Message successfully Published");
+						}
+						
+						Message_Destroy(newMessage);
+					}
+
+			//	}
+
+
+			}
+
+			Map_Destroy(newProperties);
+		}
+	
+
 	pthread_mutex_unlock(context->g_criticalSection);
-	LogInfo("--lock relased");
+	
 }
