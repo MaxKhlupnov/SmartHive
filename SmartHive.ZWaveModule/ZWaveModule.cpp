@@ -75,7 +75,7 @@ static void ZwaveDevice_Destroy(MODULE_HANDLE moduleHandle)
 		/* join the thread */
 		//ThreadAPI_Join(module_data->zwaveAdapter, &result);
 		/* free module data */
-		free((void*)module_data->zwaveNodeAddress);
+//		free((void*)module_data->zwaveNodeAddress);
 		free(module_data);
 	}
 }

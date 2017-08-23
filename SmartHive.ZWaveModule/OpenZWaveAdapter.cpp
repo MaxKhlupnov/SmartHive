@@ -100,72 +100,51 @@ void OpenZWaveAdapter::OnNotification
 	LogInfo("New notification %s from node: %d", _notification->GetAsString().c_str(), _notification->GetNodeId());
 
 	OpenZWaveAdapter* context = (OpenZWaveAdapter*)_context;
-	// Must do this inside a critical section to avoid conflicts with the main thread
-	pthread_mutex_lock(context->g_criticalSection);
+		// Must do this inside a critical section to avoid conflicts with the main thread
+		pthread_mutex_lock(context->g_criticalSection);
+		sent_message(context->module_handle, _notification);
+		pthread_mutex_unlock(context->g_criticalSection);
+	
+}
 
-	LogInfo("--in locking section");
 
-	MESSAGE_CONFIG newMessageCfg;
-	MAP_HANDLE newProperties = Map_Create(NULL);
-		if (newProperties == NULL || context->module_handle == NULL)
+static int sent_message(ZWAVEDEVICE_DATA* handleData, Notification const* _notification)
+{
+	
+	MESSAGE_CONFIG msgConfig;
+	MAP_HANDLE propertiesMap = Map_Create(NULL);
+	if (propertiesMap == NULL)
+	{
+		LogError("unable to create a Map");
+	}
+	else
+	{
+		if (Map_AddOrUpdate(propertiesMap, "helloWorld", _notification->GetAsString().c_str()) != MAP_OK)
 		{
-			LogError("Failed to create message properties");
+			LogError("unable to Map_AddOrUpdate");
 		}
 		else
 		{
-			//TODO: Fill message properties from Notification objet and snd the message
-			if (Map_Add(newProperties, GW_SOURCE_PROPERTY, GW_SOURCE_ZWAVE_TELEMETRY) != MAP_OK)
+			const char* msgText = _notification->GetAsString().c_str();
+
+			msgConfig.size = (size_t)strlen(msgText);
+			msgConfig.source = (unsigned char*)msgText;
+
+			msgConfig.sourceProperties = propertiesMap;
+
+			MESSAGE_HANDLE helloWorldMessage = Message_Create(&msgConfig);
+			if (helloWorldMessage == NULL)
 			{
-				LogError("Failed to set source property");
-			}
-			else if (Map_Add(newProperties, GW_MAC_ADDRESS_PROPERTY, context->module_handle->zwaveNodeAddress) != MAP_OK)
-			{
-				LogError("Failed to set address property");
+				LogError("unable to create \"hello world\" message");
 			}
 			else
 			{
-				char msgText[128];
-
-				newMessageCfg.sourceProperties = newProperties;
-
-			/*	if (sprintf_s(msgText, sizeof(msgText), "{\"Notification\": %s}", _notification->GetAsString().c_str()) < 0)
-				{
-					LogError("Failed to set message text");
-				}
-				else
-				{*/
-
-					newMessageCfg.size = strlen(msgText);
-					newMessageCfg.source = (const unsigned char*)msgText;
-
-					MESSAGE_HANDLE newMessage = Message_Create(&newMessageCfg);
-					if (newMessage == NULL)
-					{
-						LogError("Failed to create new message");
-					}
-					else
-					{
-						if (Broker_Publish(context->module_handle->broker, (MODULE_HANDLE)context->module_handle, newMessage) != BROKER_OK)
-						{
-							LogError("Failed to publish new message");
-						}
-						else 
-						{
-							LogInfo("Message successfully Published");
-						}
-						
-						Message_Destroy(newMessage);
-					}
-
-			//	}
-
-
+				
+				(void)Broker_Publish(handleData->broker, (MODULE_HANDLE)handleData, helloWorldMessage);
+				//(void)Unlock(handleData->lockHandle);			
+				Message_Destroy(helloWorldMessage);
 			}
-
-			Map_Destroy(newProperties);
 		}
-	
-
-	pthread_mutex_unlock(context->g_criticalSection);
-	
+	}
+	return 0;
 }
