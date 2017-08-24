@@ -171,8 +171,10 @@ void OpenZWaveAdapter::OnNotification
 				
 				char msgText[128];
 				
-				if (sprintf_s(msgText, sizeof(msgText), "{\"ValueLabel\":\"%s\",\"Type\":\"%s\",\"ValueUnits\":\"%s\"}",
-					Manager::Get()->GetValueLabel(valId).c_str(), ValueTypeToString(valId).c_str(), Manager::Get()->GetValueUnits(valId).c_str()) < 0)
+				if (sprintf_s(msgText, sizeof(msgText), "{\"ValueLabel\":\"%s\",\"Type\":\"%s\",\"ValueUnits\":\"%s\,\"Value\":%s\}",
+					Manager::Get()->GetValueLabel(valId).c_str(), ValueTypeToString(valId).c_str(), 
+					Manager::Get()->GetValueUnits(valId).c_str(), ValueToString(valId).c_str()
+					) < 0)
 				{
 					LogError("Failed to set message text");
 				}
@@ -205,76 +207,20 @@ void OpenZWaveAdapter::OnNotification
 }
 
 string OpenZWaveAdapter::ValueToString(ValueID const& valueID) {
-	 string str;
-	 char msgText[255];
-	 switch (valueID.GetType()) {
-	 case ValueID::ValueType::ValueType_Bool:		
-			bool valBool;
-			if (Manager::Get()->GetValueAsBool(valueID, &valBool)) {
-				if (sprintf_s(msgText, sizeof(msgText), "%d0.0", valBool)) {
-					str.assign(msgText);
-				}
-				else {
-					LogError("Error setting value type of bool");
-				}
-			}
-			else {
-				LogError("Error reading value type of Bool");
-			}
-		 break;
-	 case ValueID::ValueType::ValueType_Byte:
-		 uint8 i_value;
-			 if (Manager::Get()->GetValueAsByte(valueID, &i_value)) {	
-				 if (sprintf_s(msgText, sizeof(msgText), "%u", i_value)) {
-					 str.assign(msgText);
-				 }
-				 else {
-					 LogError("Error setting value type of uint8");
-				 }
-			 }
-			 else {
-				 LogError("Error reading value type of Byte");
-			 }
-		 break;
-	 case ValueID::ValueType::ValueType_Decimal:
-		 float f_value;
-		 if (Manager::Get()->GetValueAsFloat(valueID, &f_value)) {
-			 if (sprintf_s(msgText, sizeof(msgText), "%d0.0", f_value)) {
-				 str.assign(msgText);
-			 }
-			 else {
-				 LogError("Error setting value type of float");
-			 }
+	 string str;	
+	 if (!Manager::Get()->GetValueAsString(valueID, &str)) {
+		 LogError("Error reading value type of String");
+		 return "";
+	 }
+	 else {
+		 if (valueID.GetType() == ValueID::ValueType::ValueType_String) {
+			 return '\"' + str + '\"';
 		 }
 		 else {
-			 LogError("Error reading value type of Decimal");
+			 return str;
 		 }
-		 break;
-	 case 	ValueID::ValueType::ValueType_Int:
-		 str = "Int";
-		 break;
-	 case 	ValueID::ValueType::ValueType_List:
-		 str = "List";
-		 break;
-	 case 	ValueID::ValueType::ValueType_Schedule:
-		 str = "Schedule";
-		 break;
-	 case 	ValueID::ValueType::ValueType_Short:
-		 str = "Short";
-		 break;
-	 case 	ValueID::ValueType::ValueType_Button:
-		 str = "Button";
-		 break;
-	 case ValueID::ValueType::ValueType_String:
-		 if (!Manager::Get()->GetValueAsString(valueID, &str)) {
-			 LogError("Error reading value type of String");
-		 }
-		 break;
-	 case ValueID::ValueType::ValueType_Raw:
-		 str = "Raw";
-		 break;
 	 }
-	 return str;
+	 
  }
 
 string OpenZWaveAdapter::ValueTypeToString(ValueID const& valueID) {
