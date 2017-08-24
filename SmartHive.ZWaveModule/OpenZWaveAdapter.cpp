@@ -9,6 +9,7 @@
 #include "Node.h"
 #include "Group.h"
 #include "Notification.h"
+#include "Utils.h"
 
 #include "value_classes/ValueBool.h"
 #include "platform/Log.h"
@@ -119,32 +120,60 @@ static int sent_message(ZWAVEDEVICE_DATA* handleData, Notification const* _notif
 	}
 	else
 	{
-		if (Map_AddOrUpdate(propertiesMap, "helloWorld", _notification->GetAsString().c_str()) != MAP_OK)
+		if (Map_AddOrUpdate(propertiesMap, GW_SOURCE_PROPERTY, GW_SOURCE_ZWAVE_TELEMETRY) != MAP_OK)
 		{
-			LogError("unable to Map_AddOrUpdate");
+			LogError("unable to Map_AddOrUpdate %s", GW_SOURCE_PROPERTY);
 		}
+		/*else if (Map_AddOrUpdate(propertiesMap, GW_MAC_ADDRESS_PROPERTY, _notification->GetHomeId) != MAP_OK) {
+			LogError("unable to Map_AddOrUpdate %s", GW_MAC_ADDRESS_PROPERTY);
+		}*/
 		else
 		{
-			const char* msgText = _notification->GetAsString().c_str();
-
-			msgConfig.size = (size_t)strlen(msgText);
-			msgConfig.source = (unsigned char*)msgText;
-
-			msgConfig.sourceProperties = propertiesMap;
-
-			MESSAGE_HANDLE helloWorldMessage = Message_Create(&msgConfig);
-			if (helloWorldMessage == NULL)
+			char tmpIdText[10];
+			if (sprintf_s(tmpIdText, sizeof(tmpIdText), "%08x", _notification->GetHomeId()) < 0)
 			{
-				LogError("unable to create \"hello world\" message");
+				LogError("Can't read ZWave HomeID");
 			}
-			else
+			else if (Map_AddOrUpdate(propertiesMap, GW_ZWAVE_HOMEID_PROPERTY, tmpIdText) != MAP_OK)
 			{
-				
-				(void)Broker_Publish(handleData->broker, (MODULE_HANDLE)handleData, helloWorldMessage);
-				//(void)Unlock(handleData->lockHandle);			
-				Message_Destroy(helloWorldMessage);
+				LogError("unable to Map_AddOrUpdate %s", GW_ZWAVE_HOMEID_PROPERTY);
+			}
+			else if (sprintf_s(tmpIdText, sizeof(tmpIdText), "%02x", _notification->GetNodeId()) < 0) 
+			{
+				LogError("Can't read ZWave NodeID");
+			}
+			else if (Map_AddOrUpdate(propertiesMap, GW_ZWAVE_NODEID_PROPERTY, tmpIdText) != MAP_OK)
+			{
+				LogError("unable to Map_AddOrUpdate %s", GW_ZWAVE_NODEID_PROPERTY);
+			}
+			else if (Map_AddOrUpdate(propertiesMap, GW_ZWAVE_NOTIFICATION_TYPE_PROPERTY, _notification->GetAsString().c_str()) != MAP_OK)
+			{
+				LogError("unable to Map_AddOrUpdate %s", GW_ZWAVE_NOTIFICATION_TYPE_PROPERTY);
+			}
+			else {
+
+				const char* msgText = _notification->GetAsString().c_str();
+
+				msgConfig.size = (size_t)strlen(msgText);
+				msgConfig.source = (unsigned char*)msgText;
+
+				msgConfig.sourceProperties = propertiesMap;
+
+				MESSAGE_HANDLE helloWorldMessage = Message_Create(&msgConfig);
+				if (helloWorldMessage == NULL)
+				{
+					LogError("unable to create \"hello world\" message");
+				}
+				else
+				{
+
+					(void)Broker_Publish(handleData->broker, (MODULE_HANDLE)handleData, helloWorldMessage);
+					//(void)Unlock(handleData->lockHandle);			
+					Message_Destroy(helloWorldMessage);
+				}
 			}
 		}
 	}
+	Map_Destroy(propertiesMap);
 	return 0;
 }

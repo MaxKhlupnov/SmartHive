@@ -7,6 +7,10 @@
 
 #define GW_SOURCE_ZWAVE_TELEMETRY     "zwaveTelemetry"
 
+#define GW_ZWAVE_HOMEID_PROPERTY       "networkId"
+#define GW_ZWAVE_NODEID_PROPERTY       "nodeId"
+#define GW_ZWAVE_NOTIFICATION_TYPE_PROPERTY   "type"
+
 typedef struct ZWAVEDEVICE_DATA_TAG 
 {
 	BROKER_HANDLE       broker;
