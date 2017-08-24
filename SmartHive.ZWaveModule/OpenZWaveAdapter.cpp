@@ -100,59 +100,85 @@ void OpenZWaveAdapter::OnNotification
 
 	LogInfo("New notification %s from node: %d", _notification->GetAsString().c_str(), _notification->GetNodeId());
 
-	OpenZWaveAdapter* context = (OpenZWaveAdapter*)_context;
+		OpenZWaveAdapter* context = (OpenZWaveAdapter*)_context;
+
+		if (_notification == NULL || context->module_handle == NULL) {
+			LogError("Incorrect sent_message function call parameter values");
+			return;
+		}
+
+		if (_notification->GetType() != OpenZWave::Notification::NotificationType::Type_ValueChanged) {
+			LogInfo("Notification type %s skipped for sending", _notification->GetAsString().c_str());
+			return;
+		}
+
 		// Must do this inside a critical section to avoid conflicts with the main thread
-		pthread_mutex_lock(context->g_criticalSection);
-		sent_message(context->module_handle, _notification);
+		pthread_mutex_lock(context->g_criticalSection);		
+
+			SentMessage(context->module_handle, _notification);
+
 		pthread_mutex_unlock(context->g_criticalSection);
 	
 }
 
 
-static int sent_message(ZWAVEDEVICE_DATA* handleData, Notification const* _notification)
+ int OpenZWaveAdapter::SentMessage(ZWAVEDEVICE_DATA* handleData, Notification const* _notification)
 {
-	
+
 	MESSAGE_CONFIG msgConfig;
 	MAP_HANDLE propertiesMap = Map_Create(NULL);
 	if (propertiesMap == NULL)
 	{
-		LogError("unable to create a Map");
+		LogError("unable create a Map");
 	}
 	else
 	{
 		if (Map_AddOrUpdate(propertiesMap, GW_SOURCE_PROPERTY, GW_SOURCE_ZWAVE_TELEMETRY) != MAP_OK)
 		{
 			LogError("unable to Map_AddOrUpdate %s", GW_SOURCE_PROPERTY);
-		}
-		/*else if (Map_AddOrUpdate(propertiesMap, GW_MAC_ADDRESS_PROPERTY, _notification->GetHomeId) != MAP_OK) {
-			LogError("unable to Map_AddOrUpdate %s", GW_MAC_ADDRESS_PROPERTY);
-		}*/
+		}		
 		else
 		{
-			char tmpIdText[10];
-			if (sprintf_s(tmpIdText, sizeof(tmpIdText), "%08x", _notification->GetHomeId()) < 0)
+			char homeIdText[10];
+			char nodeIdText[3];
+			if (sprintf_s(homeIdText, sizeof(homeIdText), "%08x", _notification->GetHomeId()) < 0)
 			{
 				LogError("Can't read ZWave HomeID");
 			}
-			else if (Map_AddOrUpdate(propertiesMap, GW_ZWAVE_HOMEID_PROPERTY, tmpIdText) != MAP_OK)
+			else if (Map_AddOrUpdate(propertiesMap, GW_ZWAVE_HOMEID_PROPERTY, homeIdText) != MAP_OK)
 			{
 				LogError("unable to Map_AddOrUpdate %s", GW_ZWAVE_HOMEID_PROPERTY);
 			}
-			else if (sprintf_s(tmpIdText, sizeof(tmpIdText), "%02x", _notification->GetNodeId()) < 0) 
+			else if (sprintf_s(nodeIdText, sizeof(nodeIdText), "%02x", _notification->GetNodeId()) < 0)
 			{
 				LogError("Can't read ZWave NodeID");
 			}
-			else if (Map_AddOrUpdate(propertiesMap, GW_ZWAVE_NODEID_PROPERTY, tmpIdText) != MAP_OK)
+			else if (Map_AddOrUpdate(propertiesMap, GW_ZWAVE_NODEID_PROPERTY, nodeIdText) != MAP_OK)
 			{
 				LogError("unable to Map_AddOrUpdate %s", GW_ZWAVE_NODEID_PROPERTY);
 			}
+			/*
+			Useless until we add other type than NotificationType::Type_ValueChanged
 			else if (Map_AddOrUpdate(propertiesMap, GW_ZWAVE_NOTIFICATION_TYPE_PROPERTY, _notification->GetAsString().c_str()) != MAP_OK)
 			{
 				LogError("unable to Map_AddOrUpdate %s", GW_ZWAVE_NOTIFICATION_TYPE_PROPERTY);
-			}
-			else {
+			}*/
+			else{
 
-				const char* msgText = _notification->GetAsString().c_str();
+				//["DeviceId":"7_3454969560", "Time": "2016-10-03T05:18:22.5572932", "ValueLabel": "Battery Level", "Type": "Byte", "ValueUnits": "%", "Value": 67.0]
+
+				ValueID const& valId = _notification->GetValueID();
+				
+				char msgText[128];
+				
+				if (sprintf_s(msgText, sizeof(msgText), "{\"ValueLabel\":\"%s\",\"Type\":\"%s\",\"ValueUnits\":\"%s\"}",
+					Manager::Get()->GetValueLabel(valId).c_str(), ValueTypeToString(valId).c_str(), Manager::Get()->GetValueUnits(valId).c_str()) < 0)
+				{
+					LogError("Failed to set message text");
+				}
+				else {
+					LogInfo(msgText);
+				}
 
 				msgConfig.size = (size_t)strlen(msgText);
 				msgConfig.source = (unsigned char*)msgText;
@@ -177,3 +203,114 @@ static int sent_message(ZWAVEDEVICE_DATA* handleData, Notification const* _notif
 	Map_Destroy(propertiesMap);
 	return 0;
 }
+
+string OpenZWaveAdapter::ValueToString(ValueID const& valueID) {
+	 string str;
+	 char msgText[255];
+	 switch (valueID.GetType()) {
+	 case ValueID::ValueType::ValueType_Bool:		
+			bool valBool;
+			if (Manager::Get()->GetValueAsBool(valueID, &valBool)) {
+				if (sprintf_s(msgText, sizeof(msgText), "%d0.0", valBool)) {
+					str.assign(msgText);
+				}
+				else {
+					LogError("Error setting value type of bool");
+				}
+			}
+			else {
+				LogError("Error reading value type of Bool");
+			}
+		 break;
+	 case ValueID::ValueType::ValueType_Byte:
+		 uint8 i_value;
+			 if (Manager::Get()->GetValueAsByte(valueID, &i_value)) {	
+				 if (sprintf_s(msgText, sizeof(msgText), "%u", i_value)) {
+					 str.assign(msgText);
+				 }
+				 else {
+					 LogError("Error setting value type of uint8");
+				 }
+			 }
+			 else {
+				 LogError("Error reading value type of Byte");
+			 }
+		 break;
+	 case ValueID::ValueType::ValueType_Decimal:
+		 float f_value;
+		 if (Manager::Get()->GetValueAsFloat(valueID, &f_value)) {
+			 if (sprintf_s(msgText, sizeof(msgText), "%d0.0", f_value)) {
+				 str.assign(msgText);
+			 }
+			 else {
+				 LogError("Error setting value type of float");
+			 }
+		 }
+		 else {
+			 LogError("Error reading value type of Decimal");
+		 }
+		 break;
+	 case 	ValueID::ValueType::ValueType_Int:
+		 str = "Int";
+		 break;
+	 case 	ValueID::ValueType::ValueType_List:
+		 str = "List";
+		 break;
+	 case 	ValueID::ValueType::ValueType_Schedule:
+		 str = "Schedule";
+		 break;
+	 case 	ValueID::ValueType::ValueType_Short:
+		 str = "Short";
+		 break;
+	 case 	ValueID::ValueType::ValueType_Button:
+		 str = "Button";
+		 break;
+	 case ValueID::ValueType::ValueType_String:
+		 if (!Manager::Get()->GetValueAsString(valueID, &str)) {
+			 LogError("Error reading value type of String");
+		 }
+		 break;
+	 case ValueID::ValueType::ValueType_Raw:
+		 str = "Raw";
+		 break;
+	 }
+	 return str;
+ }
+
+string OpenZWaveAdapter::ValueTypeToString(ValueID const& valueID) {
+	 
+		 string str;
+		 switch (valueID.GetType()) {
+			case ValueID::ValueType::ValueType_Bool:
+				str = "Bool";
+				break;
+			case ValueID::ValueType::ValueType_Byte:
+				str = "Byte";
+				break;
+			case ValueID::ValueType::ValueType_Decimal:
+				str = "Decimal";
+				break;
+			case 	ValueID::ValueType::ValueType_Int:
+				str = "Int";
+				break;
+			case 	ValueID::ValueType::ValueType_List:
+				str = "List";
+				break;
+			case 	ValueID::ValueType::ValueType_Schedule:
+				str = "Schedule";
+				break;
+			case 	ValueID::ValueType::ValueType_Short:
+				str = "Short";
+				break;
+			case 	ValueID::ValueType::ValueType_Button:
+					str = "Button";
+					break;
+			case ValueID::ValueType::ValueType_String:
+				 str = "String";
+				 break;
+			case ValueID::ValueType::ValueType_Raw:
+				str = "Raw";
+				break;
+		 }
+		 return str;
+ }

@@ -21,7 +21,7 @@ static bool   g_initFailed = false;
 static list<NodeInfo*> g_nodes;
 
 //pthread_mutex_t initMutex = PTHREAD_MUTEX_INITIALIZER;
-static int sent_message(ZWAVEDEVICE_DATA* handleData, Notification const* _notification);
+
 
 
 
@@ -37,6 +37,8 @@ public:
 	void Start();	
 private:
 	ZWAVEDEVICE_DATA* module_handle;	
-	
+	static int SentMessage(ZWAVEDEVICE_DATA* handleData, Notification const* _notification);
+	static string ValueTypeToString(ValueID const& valueID);
+	static string ValueToString(ValueID const& valueID);
 };
 
