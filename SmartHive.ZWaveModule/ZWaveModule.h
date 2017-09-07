@@ -15,18 +15,18 @@ typedef struct ZWAVEDEVICE_DATA_TAG
 {
 	BROKER_HANDLE       broker;
 	THREAD_HANDLE       zwaveDeviceThread;
-	const char *        zwaveNodeAddress;
+	const char *        sendNotificationOfType;
 	const char *        controllerPath;
-	unsigned int        messagePeriod;
+	const char *        zwaveConfigPath;
 	unsigned int        zwaveDeviceRunning : 1;
 } ZWAVEDEVICE_DATA;
 
 
 typedef struct ZWAVEDEVICE_CONFIG_TAG
 {
-	char *              macAddress;
+	char *              sendNotificationOfType;
 	char *              controllerPath;
-	unsigned int        messagePeriod;
+	char *				zwaveConfigPath;
 } ZWAVEDEVICE_CONFIG;
 
 #ifdef __cplusplus

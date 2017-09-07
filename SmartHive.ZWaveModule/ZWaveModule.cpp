@@ -19,7 +19,7 @@ static void ZwaveDevice_Receive(MODULE_HANDLE moduleHandle, MESSAGE_HANDLE messa
 	CONSTMAP_HANDLE properties = Message_GetProperties(messageHandle);
 	if (properties != NULL)
 	{
-		const char* addr = ((ZWAVEDEVICE_DATA*)moduleHandle)->zwaveNodeAddress;
+		const char* addr = ((ZWAVEDEVICE_DATA*)moduleHandle)->sendNotificationOfType;
 
 		// We're only interested in cloud-to-device (C2D) messages addressed to
 		// this device
@@ -75,7 +75,7 @@ static void ZwaveDevice_Destroy(MODULE_HANDLE moduleHandle)
 		/* join the thread */
 		//ThreadAPI_Join(module_data->zwaveAdapter, &result);
 		/* free module data */
-//		free((void*)module_data->zwaveNodeAddress);
+//		free((void*)module_data->sendNotificationOfType);
 		free(module_data);
 	}
 }
@@ -103,7 +103,7 @@ static void ZwaveDevice_Start(MODULE_HANDLE moduleHandle)
 			{
 				LogError("Failed to set source property");
 			}
-			else if (Map_Add(newProperties, GW_MAC_ADDRESS_PROPERTY, module_data->zwaveNodeAddress) != MAP_OK)
+			else if (Map_Add(newProperties, GW_MAC_ADDRESS_PROPERTY, module_data->sendNotificationOfType) != MAP_OK)
 			{
 				LogError("Failed to set address property");
 			}
@@ -171,11 +171,11 @@ static MODULE_HANDLE ZwaveDevice_Create(BROKER_HANDLE broker, const void* config
 			/* set module is running to true */
 			result->zwaveDeviceRunning = 1;
 
-			result->zwaveNodeAddress = config->macAddress;
+			result->sendNotificationOfType = config->sendNotificationOfType;
 			result->controllerPath = config->controllerPath;
-			result->messagePeriod = config->messagePeriod;
+			result->zwaveConfigPath = config->zwaveConfigPath;
 			result->zwaveDeviceThread = NULL;
-			LogInfo("Created ZWave Device: controllerPath->%s macAddress->%s\n", result->controllerPath, result->zwaveNodeAddress);
+			LogInfo("Created ZWave Device: controllerPath->%s sendNotificationOfType->%s\n", result->controllerPath, result->sendNotificationOfType);
 		}
 	}
 
@@ -189,7 +189,7 @@ void ZwaveDevice_FreeConfiguration(void * configuration)
 	if (configuration != NULL)
 	{
 		ZWAVEDEVICE_CONFIG_TAG * config = (ZWAVEDEVICE_CONFIG_TAG *)configuration;
-		free(config->macAddress);
+		free(config->sendNotificationOfType);
 		free(config);
 	}
 }
@@ -224,7 +224,7 @@ static void * ZwaveDevice_ParseConfigurationFromJson(const char* configuration)
 				const char* controllerPath = json_object_get_string(root, "controllerPath");
 				if (controllerPath == NULL)
 				{
-					LogError("unable to json_object_get_string controllerPath");
+					LogError("unable to json_object_get_string for controllerPath");
 					result = NULL;
 				}
 				else
@@ -236,39 +236,44 @@ static void * ZwaveDevice_ParseConfigurationFromJson(const char* configuration)
 						result = NULL;
 					}
 					else {
-						const char* macAddress = json_object_get_string(root, "macAddress");
-						if (macAddress == NULL)
+
+
+						const char* sendNotificationOfType = json_object_get_string(root, "sendNotificationOfType");
+						if (sendNotificationOfType == NULL)
 						{
-							LogError("unable to json_object_get_string");
+							LogError("unable to json_object_get_string for sendNotificationOfType");
 							result = NULL;
 						}
-						else
+						else if (mallocAndStrcpy_s(&(config.sendNotificationOfType), sendNotificationOfType) != 0)
 						{
-							int period = (int)json_object_get_number(root, "messagePeriod");
-							if (period <= 0)
+							result = NULL;
+						}else 
+						{
+							const char * zwaveConfigPath = json_object_get_string(root, "zwaveConfigPath");
+							if (zwaveConfigPath == NULL)
 							{
-								LogError("Invalid period time specified");
+								LogError("unable to json_object_get_string for zwaveConfigPath");
 								result = NULL;
 							}
 							else
 							{
-								if (mallocAndStrcpy_s(&(config.macAddress), macAddress) != 0)
-								{
-									result = NULL;
+								if (mallocAndStrcpy_s(&(config.zwaveConfigPath), zwaveConfigPath) != 0) {
+										LogError("Error allocating memory for controllerPath string");
+										result = NULL;
 								}
-								else
-								{
-									config.messagePeriod = period;
+								else 
+								{									
 									result = (ZWAVEDEVICE_CONFIG*)malloc(sizeof(ZWAVEDEVICE_CONFIG));
 									if (result == NULL) {
-										free(config.macAddress);
+										free(config.sendNotificationOfType);
 										free(config.controllerPath);
+										free(config.zwaveConfigPath);
 										LogError("allocation of configuration failed");
 									}
 									else
 									{
 										*result = config;
-										LogInfo("Zwave device config record: controllerPath->%s macAddress->%s\n", config.controllerPath, config.macAddress);
+										LogInfo("Zwave device config record: controllerPath->%s sendNotificationOfType->%s config.zwaveConfigPath->%s \n", config.controllerPath, config.sendNotificationOfType, config.zwaveConfigPath);
 									}
 								}
 							}

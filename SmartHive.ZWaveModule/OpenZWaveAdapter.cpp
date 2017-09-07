@@ -54,7 +54,7 @@ void OpenZWaveAdapter::Start() {
 	// The first argument is the path to the config files (where the manufacturer_specific.xml file is located
 	// The second argument is the path for saved Z-Wave network state and the log file.  If you leave it NULL 
 	// the log file will appear in the program's working directory.
-	Options::Create("../../../../open-zwave/config/", "", "");
+	Options::Create(this->module_handle->zwaveConfigPath, "", "");
 	Options::Get()->AddOptionInt("SaveLogLevel", LogLevel_Detail);
 	Options::Get()->AddOptionInt("QueueLogLevel", LogLevel_Debug);
 	Options::Get()->AddOptionInt("DumpTrigger", LogLevel_Error);
@@ -107,7 +107,8 @@ void OpenZWaveAdapter::OnNotification
 			return;
 		}
 
-		if (_notification->GetType() != OpenZWave::Notification::NotificationType::Type_ValueChanged) {
+		//if (_notification->GetType() != OpenZWave::Notification::NotificationType::Type_ValueChanged) {
+		if (allowSendNotificationOfThisType(context->module_handle, _notification)) {
 			LogInfo("Notification type %s skipped for sending", _notification->GetAsString().c_str());
 			return;
 		}
@@ -121,6 +122,12 @@ void OpenZWaveAdapter::OnNotification
 	
 }
 
+bool OpenZWaveAdapter::allowSendNotificationOfThisType(ZWAVEDEVICE_DATA* handleData, Notification const* _notification) {
+		
+	// TODO: FILTER NOTIFICATION FOR SENDING BASED IN CONFIG VALUE handleData->sendNotificationOfType
+	return (_notification->GetType() != OpenZWave::Notification::NotificationType::Type_ValueChanged);
+
+}
 
  int OpenZWaveAdapter::SentMessage(ZWAVEDEVICE_DATA* handleData, Notification const* _notification)
 {
@@ -187,17 +194,17 @@ void OpenZWaveAdapter::OnNotification
 
 				msgConfig.sourceProperties = propertiesMap;
 
-				MESSAGE_HANDLE helloWorldMessage = Message_Create(&msgConfig);
-				if (helloWorldMessage == NULL)
+				MESSAGE_HANDLE zWaveMessage = Message_Create(&msgConfig);
+				if (zWaveMessage == NULL)
 				{
-					LogError("unable to create \"hello world\" message");
+					LogError("unable to create \"zWave Notification\" message");
 				}
 				else
 				{
 
-					(void)Broker_Publish(handleData->broker, (MODULE_HANDLE)handleData, helloWorldMessage);
+					(void)Broker_Publish(handleData->broker, (MODULE_HANDLE)handleData, zWaveMessage);
 					//(void)Unlock(handleData->lockHandle);			
-					Message_Destroy(helloWorldMessage);
+					Message_Destroy(zWaveMessage);
 				}
 			}
 		}

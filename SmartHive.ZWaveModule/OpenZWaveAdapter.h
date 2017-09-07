@@ -40,5 +40,6 @@ private:
 	static int SentMessage(ZWAVEDEVICE_DATA* handleData, Notification const* _notification);
 	static string ValueTypeToString(ValueID const& valueID);
 	static string ValueToString(ValueID const& valueID);
+	static bool allowSendNotificationOfThisType(ZWAVEDEVICE_DATA* handleData, Notification const* _notification);
 };
 
