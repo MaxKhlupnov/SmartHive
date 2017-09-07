@@ -96,10 +96,12 @@
   </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="OpenZWaveAdapter.h" />
+    <ClInclude Include="ZWaveIdentityMap.h" />
     <ClInclude Include="ZWaveModule.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OpenZWaveAdapter.cpp" />
+    <ClCompile Include="ZWaveIdentityMap.cpp" />
     <ClCompile Include="ZWaveModule.cpp" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
