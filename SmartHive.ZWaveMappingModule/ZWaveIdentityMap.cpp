@@ -1,26 +1,26 @@
 
 #include <stddef.h>
 #include <stdlib.h>
-#include <string.h>
 #include <stdio.h>
 #include <sstream>
 #include <ctype.h>
 
 #include <parson.h>
+#include "messageproperties.h"
+#include "message.h"
+#include "broker.h"
 
+#include "azure_c_shared_utility/gballoc.h"
 #include "azure_c_shared_utility/strings.h"
 #include "azure_c_shared_utility/crt_abstractions.h"
-#include "ZWaveIdentityMap.h"
 #include "azure_c_shared_utility/constmap.h"
 #include "azure_c_shared_utility/constbuffer.h"
 #include "azure_c_shared_utility/xlogging.h"
 #include "azure_c_shared_utility/vector.h"
 
-#include "messageproperties.h"
-#include "message.h"
-#include "broker.h"
 
-#include "ZWaveModule.h"
+
+#include "ZWaveIdentityMap.h"
 
 typedef struct ZWAVE_IDENTITY_MAP_DATA_TAG
 {

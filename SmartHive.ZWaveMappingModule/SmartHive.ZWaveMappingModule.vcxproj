@@ -62,20 +62,30 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <IncludePath>../SmartHive.ZWaveModule;../open-zwave/cpp/src;../include;../iot-edge/install-deps/include;../iot-edge/install-deps/include/azureiot;../iot-edge/install-deps/include/azureiot/azure_c_shared_utility;../iot-edge/install-deps/include/azureiot/azure_uamqp_c;../iot-edge/install-deps/include/azureiot/azure_umqtt_c;../iot-edge/core/inc;../iot-edge/modules/common;../include/x86_64-linux-gnu/bits;$(IncludePath)</IncludePath>
-    <LibraryPath>../iot-edge/build/core;../SmartHive.ZWaveModule/bin/ARM/Debug;</LibraryPath>
+    <IncludePath>../iot-edge/core/inc;../include;../iot-edge/install-deps/include;../iot-edge/install-deps/include/azureiot;../iot-edge/install-deps/include/azureiot/azure_c_shared_utility;../iot-edge/install-deps/include/azureiot/azure_uamqp_c;../iot-edge/install-deps/include/azureiot/azure_umqtt_c;../iot-edge/core/inc;../iot-edge/modules/common;../include/x86_64-linux-gnu/bits;$(IncludePath)</IncludePath>
+    <LibraryPath>../iot-edge/build/core;</LibraryPath>
     <TargetExt>.so</TargetExt>
+    <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
-  <ItemGroup>
-    <ClCompile Include="ZWaveIdentityMap.cpp" />
-  </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ZWaveIdentityMap.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ZWaveIdentityMap.cpp" />
+  </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <Link>
-      <LibraryDependencies>SmartHive.ZWaveModule</LibraryDependencies>
+      <LibraryDependencies>gateway;pthread;aziotsharedutil;iothub_client;iothub_client_amqp_transport;uuid;%(LibraryDependencies)</LibraryDependencies>
     </Link>
+    <ClCompile>
+      <Verbose>true</Verbose>
+    </ClCompile>
+    <ClCompile>
+      <ShowIncludes>true</ShowIncludes>
+    </ClCompile>
+    <ClCompile>
+      <PositionIndependentCode>true</PositionIndependentCode>
+    </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
