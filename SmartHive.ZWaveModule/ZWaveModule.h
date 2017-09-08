@@ -5,16 +5,18 @@
 #include "broker.h"
 #include "azure_c_shared_utility/threadapi.h"
 
+
 #define GW_SOURCE_ZWAVE_TELEMETRY     "zwaveTelemetry"
 
 #define GW_ZWAVE_HOMEID_PROPERTY       "networkId"
 #define GW_ZWAVE_NODEID_PROPERTY       "nodeId"
 #define GW_ZWAVE_NOTIFICATION_TYPE_PROPERTY   "type"
 
-typedef struct ZWAVEDEVICE_DATA_TAG 
+
+typedef struct ZWAVEDEVICE_DATA_TAG
 {
 	BROKER_HANDLE       broker;
-	THREAD_HANDLE       zwaveDeviceThread;
+	const void *       zwaveDeviceHandle;
 	const char *        sendNotificationOfType;
 	const char *        controllerPath;
 	const char *        zwaveConfigPath;

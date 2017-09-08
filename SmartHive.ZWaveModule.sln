@@ -1,14 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.8
+VisualStudioVersion = 15.0.26730.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmartHive.ZWaveModule", "SmartHive.ZWaveModule\SmartHive.ZWaveModule.vcxproj", "{9ACE489E-2E23-4897-AC5C-97AE9605A092}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmartHive.ZWaveGateway", "SmartHive.ZWaveGateway\SmartHive.ZWaveGateway.vcxproj", "{8884DBF5-AED5-4910-B4DC-DC97DAFD29AC}"
 	ProjectSection(ProjectDependencies) = postProject
+		{DF1B3B6D-DC8F-4092-B16F-52453D4AC95E} = {DF1B3B6D-DC8F-4092-B16F-52453D4AC95E}
 		{9ACE489E-2E23-4897-AC5C-97AE9605A092} = {9ACE489E-2E23-4897-AC5C-97AE9605A092}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmartHive.ZWaveMappingModule", "SmartHive.ZWaveMappingModule\SmartHive.ZWaveMappingModule.vcxproj", "{DF1B3B6D-DC8F-4092-B16F-52453D4AC95E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +48,18 @@ Global
 		{8884DBF5-AED5-4910-B4DC-DC97DAFD29AC}.Release|x64.Build.0 = Release|x64
 		{8884DBF5-AED5-4910-B4DC-DC97DAFD29AC}.Release|x86.ActiveCfg = Release|x86
 		{8884DBF5-AED5-4910-B4DC-DC97DAFD29AC}.Release|x86.Build.0 = Release|x86
+		{DF1B3B6D-DC8F-4092-B16F-52453D4AC95E}.Debug|ARM.ActiveCfg = Debug|ARM
+		{DF1B3B6D-DC8F-4092-B16F-52453D4AC95E}.Debug|ARM.Build.0 = Debug|ARM
+		{DF1B3B6D-DC8F-4092-B16F-52453D4AC95E}.Debug|x64.ActiveCfg = Debug|x64
+		{DF1B3B6D-DC8F-4092-B16F-52453D4AC95E}.Debug|x64.Build.0 = Debug|x64
+		{DF1B3B6D-DC8F-4092-B16F-52453D4AC95E}.Debug|x86.ActiveCfg = Debug|x86
+		{DF1B3B6D-DC8F-4092-B16F-52453D4AC95E}.Debug|x86.Build.0 = Debug|x86
+		{DF1B3B6D-DC8F-4092-B16F-52453D4AC95E}.Release|ARM.ActiveCfg = Release|ARM
+		{DF1B3B6D-DC8F-4092-B16F-52453D4AC95E}.Release|ARM.Build.0 = Release|ARM
+		{DF1B3B6D-DC8F-4092-B16F-52453D4AC95E}.Release|x64.ActiveCfg = Release|x64
+		{DF1B3B6D-DC8F-4092-B16F-52453D4AC95E}.Release|x64.Build.0 = Release|x64
+		{DF1B3B6D-DC8F-4092-B16F-52453D4AC95E}.Release|x86.ActiveCfg = Release|x86
+		{DF1B3B6D-DC8F-4092-B16F-52453D4AC95E}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

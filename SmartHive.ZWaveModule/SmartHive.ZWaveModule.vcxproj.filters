@@ -3,11 +3,9 @@
   <ItemGroup>
     <ClInclude Include="ZWaveModule.h" />
     <ClInclude Include="OpenZWaveAdapter.h" />
-    <ClInclude Include="ZWaveIdentityMap.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ZWaveModule.cpp" />
     <ClCompile Include="OpenZWaveAdapter.cpp" />
-    <ClCompile Include="ZWaveIdentityMap.cpp" />
   </ItemGroup>
 </Project>

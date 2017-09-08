@@ -31,7 +31,7 @@ class OpenZWaveAdapter
 	pthread_mutex_t* g_criticalSection;
 
 public:
-	OpenZWaveAdapter(ZWAVEDEVICE_DATA* module_data);
+	OpenZWaveAdapter(ZWAVEDEVICE_DATA * module_data);
 	~OpenZWaveAdapter();
 	static void OnNotification(Notification const* _notification, void* _context);
 	void Start();	

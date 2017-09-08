@@ -71,7 +71,7 @@ static void ZwaveDevice_Destroy(MODULE_HANDLE moduleHandle)
 		int result;
 
 		/* Tell thread to stop */
-		module_data->zwaveDeviceRunning = 0;
+		module_data->zwaveDeviceRunning = 0;		
 		/* join the thread */
 		//ThreadAPI_Join(module_data->zwaveAdapter, &result);
 		/* free module data */
@@ -99,15 +99,15 @@ static void ZwaveDevice_Start(MODULE_HANDLE moduleHandle)
 		{
 			ZWAVEDEVICE_DATA* module_data = (ZWAVEDEVICE_DATA*)moduleHandle;
 
-			if (Map_Add(newProperties, GW_SOURCE_PROPERTY, GW_SOURCE_BLE_TELEMETRY) != MAP_OK)
+			if (Map_Add(newProperties, GW_SOURCE_PROPERTY, GW_SOURCE_ZWAVE_TELEMETRY) != MAP_OK)
 			{
 				LogError("Failed to set source property");
 			}
-			else if (Map_Add(newProperties, GW_MAC_ADDRESS_PROPERTY, module_data->sendNotificationOfType) != MAP_OK)
+			/*else if (Map_Add(newProperties, GW_ZWAVE_HOMEID_PROPERTY, ) != MAP_OK)
 			{
 				LogError("Failed to set address property");
-			}
-			else if (Map_Add(newProperties, "deviceFunction", "register") != MAP_OK)
+			}*/
+			else if (Map_Add(newProperties, "deviceFunction", module_data->sendNotificationOfType) != MAP_OK)
 			{
 				LogError("Failed to set deviceFunction property");
 			}
@@ -174,7 +174,7 @@ static MODULE_HANDLE ZwaveDevice_Create(BROKER_HANDLE broker, const void* config
 			result->sendNotificationOfType = config->sendNotificationOfType;
 			result->controllerPath = config->controllerPath;
 			result->zwaveConfigPath = config->zwaveConfigPath;
-			result->zwaveDeviceThread = NULL;
+			//result->zwaveDeviceThread = NULL;
 			LogInfo("Created ZWave Device: controllerPath->%s sendNotificationOfType->%s\n", result->controllerPath, result->sendNotificationOfType);
 		}
 	}
