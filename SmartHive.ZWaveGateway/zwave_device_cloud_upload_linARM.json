@@ -15,6 +15,29 @@
       }
     },
     {
+      "name": "mapping",
+      "loader": {
+        "name": "native",
+        "entrypoint": {
+          "module.path": "../../../../SmartHive.ZWaveMappingModule/bin/ARM/Debug/libSmartHive.ZWaveMappingModule.so"
+        }
+      },
+      "args": [
+        {
+          "networkId": "cdeea6d8",
+          "nodeId": "07",
+          "deviceId": "7_3454969560",
+          "deviceKey": "ni1iJkARke/ByN6g9FuOuw=="
+        },
+        {
+          "networkId": "cdeea6d8",
+          "nodeId": "05",
+          "deviceId": "5_3454969560",
+          "deviceKey": "7OkPJOxToTrHwOwnTatQLQ=="
+        }
+      ]
+    },
+    {
       "name": "Logger",
       "loader": {
         "name": "native",
@@ -31,6 +54,10 @@
     {
       "source": "*",
       "sink": "Logger"
+    },
+    {
+      "source": "ZWaveModule",
+      "sink": "mapping"
     }
   ]
 }

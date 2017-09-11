@@ -16,7 +16,7 @@ extern "C"
 
 	typedef struct ZWAVE_IDENTITY_MAP_CONFIG_TAG
 	{
-		int zwaveNetworkId; /* integer number of the network */
+		unsigned int zwaveNetworkId; /* integer number of the network */
 		const char* zwaveNodeId; /* can be a hex number of zwave node or star(*) match all nodes on the network*/
 		const char* deviceId;
 		const char* deviceKey;

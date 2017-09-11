@@ -9,7 +9,7 @@
 #include "messageproperties.h"
 #include "message.h"
 #include "broker.h"
-
+#include "azure_c_shared_utility/threadapi.h"
 #include "azure_c_shared_utility/gballoc.h"
 #include "azure_c_shared_utility/strings.h"
 #include "azure_c_shared_utility/crt_abstractions.h"
@@ -60,15 +60,22 @@ static bool addOneRecord(VECTOR_HANDLE inputVector, JSON_Object * record)
 		const char * nodeId;
 		const char * deviceId;
 		const char * deviceKey;
-		unsigned int networkId = (int)json_object_get_number(record, GW_ZWAVE_HOMEID_PROPERTY);
+		const char * sNetworkId;
+		unsigned int networkId = -1;
 
-		if (networkId <= 0)
+
+		if ((sNetworkId = json_object_get_string(record, GW_ZWAVE_HOMEID_PROPERTY)) == NULL)		
 		{
 			/*Codes_SRS_IDMAP_05_008: [ If the array object does not contain a value named "networkId" then IdentityMap_ParseConfigurationFromJson shall fail and return NULL. ]*/
-			LogError("Wrong parameter %s value (should be an integer number of the zwave network)", GW_ZWAVE_HOMEID_PROPERTY);
+			LogError("Did not find expected %s configuration", GW_ZWAVE_HOMEID_PROPERTY);
 			success = false;
 		}
-		if ((nodeId = json_object_get_string(record, GW_ZWAVE_NODEID_PROPERTY)) == NULL)
+		else if ( sscanf(sNetworkId, "%08x", &networkId) < 0) {
+
+			LogError("Wrong parameter %s value %s (should be an integer number of the zwave network)", GW_ZWAVE_HOMEID_PROPERTY, sNetworkId);
+			success = false;
+
+		}else if ((nodeId = json_object_get_string(record, GW_ZWAVE_NODEID_PROPERTY)) == NULL)
 		{
 			/*Codes_SRS_IDMAP_05_008: [ If the array object does not contain a value named "nodeId" then IdentityMap_ParseConfigurationFromJson shall fail and return NULL. ]*/
 			LogError("Did not find expected %s configuration", GW_ZWAVE_NODEID_PROPERTY);
@@ -241,7 +248,7 @@ static bool IdentityMap_ValidateConfig(const VECTOR_HANDLE mappingVector)
 			if ((element->deviceId == NULL) ||
 				(element->deviceKey == NULL) ||
 				(element->zwaveNodeId == NULL) ||
-				(element->zwaveNetworkId == NULL))
+				(element->zwaveNetworkId <= 0))
 			{
 				/*Codes_SRS_IDMAP_17_019: [If any zwaveNodeId,zwaveNetworkId,  deviceId or deviceKey are NULL, this function shall fail and return NULL.]*/
 				LogError("Empty mapping data values, zwaveNetworkId=%d zwaveNodeId=%p, ID=%p, key=%p",
@@ -528,26 +535,24 @@ static void IdentityMap_Receive(MODULE_HANDLE moduleHandle, MESSAGE_HANDLE messa
 			}
 			else
 			{
-				int networkId = -1;
-				const char * charMessageNetworkId;
-				try {
-					charMessageNetworkId = ConstMap_GetValue(properties, GW_ZWAVE_HOMEID_PROPERTY);
-					std::stoi(charMessageNetworkId);
-				}
-				catch(std::invalid_argument){
-					LogInfo("Wrong zwave network ID [%s] of current message", charMessageNetworkId);
-				}
-
+				unsigned int networkId = 0;
+				
+				
+				
+				const char * charMessageNetworkId = ConstMap_GetValue(properties, GW_ZWAVE_HOMEID_PROPERTY);				
 				const char * messageNodeId = IdentityMapConfig_ToUpperCase(ConstMap_GetValue(properties, GW_ZWAVE_NODEID_PROPERTY));
 
 				/*Codes_SRS_IDMAP_17_021: [If messageHandle properties does not contain "macAddress" property, then the function shall return.]*/
-				if (networkId > 0 && messageNodeId != NULL)
+				if (charMessageNetworkId != NULL && messageNodeId != NULL)
 				{
-					/*Codes_SRS_IDMAP_17_024: [If messageHandle properties contains properties "deviceName" and "deviceKey", then this function shall return.] */
-					if ((ConstMap_GetValue(properties, GW_DEVICENAME_PROPERTY) == NULL ||
+
+					if (sscanf(charMessageNetworkId, "%08x", &networkId) < 0) {
+						LogInfo("Wrong zwave network ID [%s] in the message", charMessageNetworkId);
+					} 
+					else if ((ConstMap_GetValue(properties, GW_DEVICENAME_PROPERTY) == NULL ||
 						ConstMap_GetValue(properties, GW_DEVICEKEY_PROPERTY) == NULL))
-					{
-						
+					{						
+
 							ZWAVE_IDENTITY_MAP_CONFIG key = {networkId, messageNodeId,NULL,NULL };
 
 							ZWAVE_IDENTITY_MAP_CONFIG * match = (ZWAVE_IDENTITY_MAP_CONFIG *) bsearch(&key,
