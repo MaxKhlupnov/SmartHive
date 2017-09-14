@@ -1,63 +1,81 @@
 {
   "modules": [
-    {
-      "name": "ZWaveModule",
-      "loader": {
-        "name": "native",
-        "entrypoint": {
-          "module.path": "../../../../SmartHive.ZWaveModule/bin/ARM/Debug/libSmartHive.ZWaveModule.so"
-        }
-      },
-      "args": {
-        "sendNotificationOfType": "Type_ValueChanged",
-        "controllerPath": "/dev/ttyACM0",
-        "zwaveConfigPath": "../../../../open-zwave/config/"
-      }
-    },
-    {
-      "name": "mapping",
-      "loader": {
-        "name": "native",
-        "entrypoint": {
-          "module.path": "../../../../SmartHive.ZWaveMappingModule/bin/ARM/Debug/libSmartHive.ZWaveMappingModule.so"
-        }
-      },
-      "args": [
         {
-          "networkId": "cdeea6d8",
-          "nodeId": "07",
-          "deviceId": "7_3454969560",
-          "deviceKey": "ni1iJkARke/ByN6g9FuOuw=="
+          "name": "ZWaveModule",
+          "loader": {
+            "name": "native",
+            "entrypoint": {
+              "module.path": "../../../../SmartHive.ZWaveModule/bin/ARM/Debug/libSmartHive.ZWaveModule.so"
+            }
+          },
+          "args": {
+            "sendNotificationOfType": "Type_ValueChanged",
+            "controllerPath": "/dev/ttyACM0",
+            "zwaveConfigPath": "../../../../open-zwave/config/"
+          }
         },
         {
-          "networkId": "cdeea6d8",
-          "nodeId": "05",
-          "deviceId": "5_3454969560",
-          "deviceKey": "7OkPJOxToTrHwOwnTatQLQ=="
+          "name": "mapping",
+          "loader": {
+            "name": "native",
+            "entrypoint": {
+              "module.path": "../../../../SmartHive.ZWaveMappingModule/bin/ARM/Debug/libSmartHive.ZWaveMappingModule.so"
+            }
+          },
+          "args": [
+            {
+              "networkId": "cdeea6d8",
+              "nodeId": "07",
+              "deviceId": "7_3454969560",
+              "deviceKey": "ni1iJkARke/ByN6g9FuOuw=="
+            },
+            {
+              "networkId": "cdeea6d8",
+              "nodeId": "05",
+              "deviceId": "5_3454969560",
+              "deviceKey": "7OkPJOxToTrHwOwnTatQLQ=="
+            }
+          ]
+        },
+        {
+          "name": "Logger",
+          "loader": {
+            "name": "native",
+            "entrypoint": {
+              "module.path": "../../../../iot-edge/build/modules/logger/liblogger.so"
+            }
+          },
+          "args": {
+            "filename": "deviceCloudUploadGatewaylog.log"
+          }
+        },
+        {
+          "name": "IotHub",
+          "loader": {
+            "name": "native",
+            "entrypoint": {
+              "module.path": "../../../../iot-edge/build/modules/iothub/libiothub.so"
+            }
+          },
+          "args": {
+            "IoTHubName": "mtcdatacenter",
+            "IoTHubSuffix": "azure-devices.net",
+            "Transport": "AMQP"
+          }
+        }
+      ],
+      "links": [
+        {
+          "source": "*",
+          "sink": "Logger"
+        },
+        {
+          "source": "ZWaveModule",
+          "sink": "mapping"
+        },
+        {
+          "source": "mapping",
+          "sink": "IotHub"
         }
       ]
-    },
-    {
-      "name": "Logger",
-      "loader": {
-        "name": "native",
-        "entrypoint": {
-          "module.path": "../../../../iot-edge/build/modules/logger/liblogger.so"
-        }
-      },
-      "args": {
-        "filename": "deviceCloudUploadGatewaylog.log"
-      }
     }
-  ],
-  "links": [
-    {
-      "source": "*",
-      "sink": "Logger"
-    },
-    {
-      "source": "ZWaveModule",
-      "sink": "mapping"
-    }
-  ]
-}

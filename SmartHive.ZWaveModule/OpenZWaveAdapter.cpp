@@ -178,7 +178,7 @@ bool OpenZWaveAdapter::allowSendNotificationOfThisType(ZWAVEDEVICE_DATA* handleD
 				
 				char msgText[128];
 				
-				if (sprintf_s(msgText, sizeof(msgText), "{\"ValueLabel\":\"%s\",\"Type\":\"%s\",\"ValueUnits\":\"%s\,\"Value\":%s\}",
+				if (sprintf_s(msgText, sizeof(msgText), "{\"ValueLabel\":\"%s\",\"Type\":\"%s\",\"ValueUnits\":\"%s\",\"Value\":%s}",
 					Manager::Get()->GetValueLabel(valId).c_str(), ValueTypeToString(valId).c_str(), 
 					Manager::Get()->GetValueUnits(valId).c_str(), ValueToString(valId).c_str()
 					) < 0)
