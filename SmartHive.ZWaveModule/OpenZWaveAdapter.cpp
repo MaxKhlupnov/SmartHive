@@ -2,6 +2,7 @@
 #include "azure_c_shared_utility/threadapi.h"
 #include <unistd.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "Options.h"
 
@@ -175,10 +176,22 @@ bool OpenZWaveAdapter::allowSendNotificationOfThisType(ZWAVEDEVICE_DATA* handleD
 				//["DeviceId":"7_3454969560", "Time": "2016-10-03T05:18:22.5572932", "ValueLabel": "Battery Level", "Type": "Byte", "ValueUnits": "%", "Value": 67.0]
 
 				ValueID const& valId = _notification->GetValueID();
+
+
+				auto t = std::time(nullptr);
+				struct tm * tm = std::localtime(&t);
 				
-				char msgText[128];
+				char cTimeBuffer[80];
+				strftime(cTimeBuffer, 80, "%Y-%m-%dT%H:%M:%S", tm);				
+				string sTimeBuffer(cTimeBuffer);
+
+				char msgText[500];
 				
-				if (sprintf_s(msgText, sizeof(msgText), "{\"ValueLabel\":\"%s\",\"Type\":\"%s\",\"ValueUnits\":\"%s\",\"Value\":%s}",
+
+
+				if (sprintf_s(msgText, sizeof(msgText), "{\"DeviceId\":\"%d_%u\",\"Time\":\"%s\",\"ValueLabel\":\"%s\",\"Type\":\"%s\",\"ValueUnits\":\"%s\",\"Value\":%s}",
+					_notification->GetNodeId(), _notification->GetHomeId(),
+					sTimeBuffer.c_str(),
 					Manager::Get()->GetValueLabel(valId).c_str(), ValueTypeToString(valId).c_str(), 
 					Manager::Get()->GetValueUnits(valId).c_str(), ValueToString(valId).c_str()
 					) < 0)
@@ -186,12 +199,10 @@ bool OpenZWaveAdapter::allowSendNotificationOfThisType(ZWAVEDEVICE_DATA* handleD
 					LogError("Failed to set message text");
 				}
 				else {
-					LogInfo(msgText);
+						LogInfo(msgText);			
+						msgConfig.size = (size_t)strlen(msgText);
+						msgConfig.source = (unsigned char*)msgText;
 				}
-
-				msgConfig.size = (size_t)strlen(msgText);
-				msgConfig.source = (unsigned char*)msgText;
-
 				msgConfig.sourceProperties = propertiesMap;
 
 				MESSAGE_HANDLE zWaveMessage = Message_Create(&msgConfig);
@@ -229,6 +240,7 @@ string OpenZWaveAdapter::ValueToString(ValueID const& valueID) {
 	 }
 	 
  }
+
 
 string OpenZWaveAdapter::ValueTypeToString(ValueID const& valueID) {
 	 
