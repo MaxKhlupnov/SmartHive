@@ -231,7 +231,11 @@ string OpenZWaveAdapter::ValueToString(ValueID const& valueID) {
 		 return "";
 	 }
 	 else {
-		 if (valueID.GetType() == ValueID::ValueType::ValueType_String) {
+		 if (valueID.GetType() == ValueID::ValueType::ValueType_String 
+			 || valueID.GetType() == ValueID::ValueType::ValueType_Bool
+			 || valueID.GetType() == ValueID::ValueType::ValueType_List
+			 || valueID.GetType() == ValueID::ValueType::ValueType_Schedule
+			 ) {
 			 return '\"' + str + '\"';
 		 }
 		 else {
