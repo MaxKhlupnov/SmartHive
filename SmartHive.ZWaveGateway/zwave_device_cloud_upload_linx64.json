@@ -10,7 +10,7 @@
           },
           "args": {
             "sendNotificationOfType": "Type_ValueChanged",
-            "controllerPath": "/dev/ttyACM0",
+            "controllerPath": "/dev/tty1",
             "zwaveConfigPath": "../../../../open-zwave/config/"
           }
         },
@@ -24,22 +24,10 @@
           },
           "args": [
             {
-              "networkId": "cdeea6d8",
-              "nodeId": "07",
-              "deviceId": "7_3454969560",
-              "deviceKey": "ni1iJkARke/ByN6g9FuOuw=="
-            },
-            {
-              "networkId": "cdeea6d8",
-              "nodeId": "05",
-              "deviceId": "5_3454969560",
-              "deviceKey": "7OkPJOxToTrHwOwnTatQLQ=="
-            },
-            {
-              "networkId": "cdeea6d8",
-              "nodeId": "06",
-              "deviceId": "6_3454969560",
-              "deviceKey": "z2mJQ0QryYlXgO09NJAmpA=="
+              "networkId": "<<insert here zwave networkId in hex for example: cdeea6d8>>",
+              "nodeId": "insert here zwave nodeId in hex for example: 07",
+              "deviceId": "<<insert here deviceId>>",
+              "deviceKey": "<<insert here deviceKey>>"
             }
           ]
         },
@@ -64,8 +52,8 @@
             }
           },
           "args": {
-            "IoTHubName": "mtcdatacenter",
-            "IoTHubSuffix": "azure-devices.net",
+            "IoTHubName": "<<insert here IoTHubName>>",
+            "IoTHubSuffix": "<<insert here IoTHubSuffix>>",
             "Transport": "AMQP"
           }
         }

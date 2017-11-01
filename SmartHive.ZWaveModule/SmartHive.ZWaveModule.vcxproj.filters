@@ -8,4 +8,7 @@
     <ClCompile Include="ZWaveModule.cpp" />
     <ClCompile Include="OpenZWaveAdapter.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+  </ItemGroup>
 </Project>

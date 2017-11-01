@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.10
+VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmartHive.ZWaveModule", "SmartHive.ZWaveModule\SmartHive.ZWaveModule.vcxproj", "{9ACE489E-2E23-4897-AC5C-97AE9605A092}"
 EndProject
@@ -12,6 +12,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmartHive.ZWaveGateway", "S
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmartHive.ZWaveMappingModule", "SmartHive.ZWaveMappingModule\SmartHive.ZWaveMappingModule.vcxproj", "{DF1B3B6D-DC8F-4092-B16F-52453D4AC95E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{696168F9-6F70-457C-8D73-38B0EE9897CD}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,8 +40,8 @@ Global
 		{9ACE489E-2E23-4897-AC5C-97AE9605A092}.Release|x64.Build.0 = Release|x64
 		{9ACE489E-2E23-4897-AC5C-97AE9605A092}.Release|x86.ActiveCfg = Release|x86
 		{9ACE489E-2E23-4897-AC5C-97AE9605A092}.Release|x86.Build.0 = Release|x86
-		{8884DBF5-AED5-4910-B4DC-DC97DAFD29AC}.Debug|ARM.ActiveCfg = Debug|ARM
-		{8884DBF5-AED5-4910-B4DC-DC97DAFD29AC}.Debug|ARM.Build.0 = Debug|ARM
+		{8884DBF5-AED5-4910-B4DC-DC97DAFD29AC}.Debug|ARM.ActiveCfg = Debug|x64
+		{8884DBF5-AED5-4910-B4DC-DC97DAFD29AC}.Debug|ARM.Build.0 = Debug|x64
 		{8884DBF5-AED5-4910-B4DC-DC97DAFD29AC}.Debug|x64.ActiveCfg = Debug|x64
 		{8884DBF5-AED5-4910-B4DC-DC97DAFD29AC}.Debug|x64.Build.0 = Debug|x64
 		{8884DBF5-AED5-4910-B4DC-DC97DAFD29AC}.Debug|x64.Deploy.0 = Debug|x64

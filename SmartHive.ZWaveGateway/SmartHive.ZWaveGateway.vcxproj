@@ -96,8 +96,9 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
-      <LibraryDependencies>gateway;aziotsharedutil;</LibraryDependencies>
+      <LibraryDependencies>gateway;aziotsharedutil;pthread;crypto;ssl;uuid;</LibraryDependencies>
       <VerboseOutput>true</VerboseOutput>
+      <AdditionalLibraryDirectories>/usr/lib;/usr/local/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <ClCompile>
       <Verbose>true</Verbose>

@@ -102,6 +102,9 @@
     <ClCompile Include="OpenZWaveAdapter.cpp" />
     <ClCompile Include="ZWaveModule.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+  </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <ShowIncludes>true</ShowIncludes>
@@ -111,7 +114,7 @@
     <Link />
     <Link>
       <LibraryDependencies>gateway;openzwave;pthread;aziotsharedutil;iothub_client;iothub_client_amqp_transport;uuid;%(LibraryDependencies)</LibraryDependencies>
-      <AdditionalLibraryDirectories>$(LibraryPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>/usr/lib;/usr/local/lib;$(LibraryPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
@@ -122,6 +125,7 @@
     </ClCompile>
     <Link>
       <LibraryDependencies>gateway;openzwave;pthread;aziotsharedutil;iothub_client;iothub_client_amqp_transport;uuid;%(LibraryDependencies)</LibraryDependencies>
+      <SharedLibrarySearchPath>/usr/lib;/usr/local/lib64;/usr/local/lib;%(SharedLibrarySearchPath)</SharedLibrarySearchPath>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">

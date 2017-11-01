@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="OpenZWaveAdapter" Collapsed="true">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACBAAQACACBAAAAgAAAAIEAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>OpenZWaveAdapter.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="__unnamed_struct_0002_1" Collapsed="true">
+    <Position X="4.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAIACAAAAAAAAAAAAAAEAAAAQA=</HashCode>
+      <FileName>OpenZWaveAdapter.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ZWAVEDEVICE_DATA_TAG" Collapsed="true">
+    <Position X="0.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAEAAAAAAAAEAAAAAgAAAAAAAAgAAAAAAAAIAAA=</HashCode>
+      <FileName>ZWaveModule.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ZWAVEDEVICE_CONFIG_TAG" Collapsed="true">
+    <Position X="0.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>ZWaveModule.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Typedef Name="NodeInfo" Collapsed="true">
+    <Position X="4.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>OpenZWaveAdapter.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="ZWAVEDEVICE_DATA" Collapsed="true">
+    <Position X="0.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ZWaveModule.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="ZWAVEDEVICE_CONFIG" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ZWaveModule.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
