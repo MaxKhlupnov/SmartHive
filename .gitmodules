@@ -4,6 +4,3 @@
 [submodule "iot-edge"]
 	path = iot-edge
 	url = https://github.com/Azure/iot-edge
-[submodule "parson"]
-	path = parson
-	url = https://github.com/kgabis/parson.git
