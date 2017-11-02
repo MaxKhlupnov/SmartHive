@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.27004.2006
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmartHive.ZWaveModule", "SmartHive.ZWaveModule\SmartHive.ZWaveModule.vcxproj", "{9ACE489E-2E23-4897-AC5C-97AE9605A092}"
 EndProject
@@ -16,6 +16,13 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{696168F9-6F70-457C-8D73-38B0EE9897CD}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{ACC06779-C334-41F9-9D38-2C1D43E63145}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{854D2988-E341-4070-BE73-0FC3B17FE061}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\Users\makhlu.EUROPE\Pictures\Architecture.PNG = ..\..\..\Users\makhlu.EUROPE\Pictures\Architecture.PNG
 	EndProjectSection
 EndProject
 Global
@@ -68,6 +75,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{ACC06779-C334-41F9-9D38-2C1D43E63145} = {696168F9-6F70-457C-8D73-38B0EE9897CD}
+		{854D2988-E341-4070-BE73-0FC3B17FE061} = {ACC06779-C334-41F9-9D38-2C1D43E63145}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9E0B7515-4316-4847-A94A-4CA568D0F8DC}
