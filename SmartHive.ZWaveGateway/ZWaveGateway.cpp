@@ -1,6 +1,6 @@
 
 #include <stdio.h>
-#include <unistd.h>
+//#include <unistd.h>
 
 
 #include "gateway.h"
@@ -49,43 +49,5 @@ int main(int argc, char** argv)
 		}
 	}
 	return 0;
-}
-
-
-int configureAsAService(void)
-{
-	int returnValue;
-	int functionReturn;
-
-	returnValue = chdir("/");
-
-	if (returnValue != 0)
-	{
-		LogError("Could not change working dir. Error Code: %d.", returnValue);
-		functionReturn = __LINE__;
-	}
-	else
-	{
-		returnValue = daemon(0, 0);
-		if (returnValue != 0)
-		{
-			LogError("Could not detach program from terminal. Error Code: %d.", returnValue);
-			functionReturn = __LINE__;
-		}
-		else
-		{
-			functionReturn = 0;
-		}
-	}
-
-	return functionReturn;
-}
-
-void waitForUserInput(void)
-{
-	while (1)
-	{
-		sleep(1000); //Stays here till the service is stopped. 
-	}
 }
 

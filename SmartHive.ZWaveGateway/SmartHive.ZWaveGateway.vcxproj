@@ -39,8 +39,11 @@
       <RemoteCopyFile Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">true</RemoteCopyFile>
       <RemoteCopyToOutputDir Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">true</RemoteCopyToOutputDir>
     </None>
+    <None Include="zwave_device_cloud_upload_win.json" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="module_service_config_disabled.c" />
+    <ClCompile Include="module_service_config_enabled.c" />
     <ClCompile Include="ZWaveGateway.cpp" />
   </ItemGroup>
   <ItemGroup>
