@@ -1,6 +1,8 @@
 #include "OpenZWaveAdapter.h"
 #include "azure_c_shared_utility/threadapi.h"
-#include <unistd.h>
+#include "azure_c_shared_utility/lock.h"
+#include "azure_c_shared_utility/xlogging.h"
+
 #include <stdlib.h>
 #include <time.h>
 
@@ -14,7 +16,7 @@
 
 #include "value_classes/ValueBool.h"
 #include "platform/Log.h"
-#include "azure_c_shared_utility/xlogging.h"
+
 #include "broker.h"
 #include "messageproperties.h"
 
@@ -113,13 +115,23 @@ void OpenZWaveAdapter::OnNotification
 			LogInfo("Notification type %s skipped for sending", _notification->GetAsString().c_str());
 			return;
 		}
-
+		
 		// Must do this inside a critical section to avoid conflicts with the main thread
-		pthread_mutex_lock(context->g_criticalSection);		
+		if (::Lock(context->g_criticalSection) == LOCK_OK)
+        {		
 
 			SentMessage(context->module_handle, _notification);
-
-		pthread_mutex_unlock(context->g_criticalSection);
+			
+            if (::Unlock(context->g_criticalSection) != LOCK_OK)
+            {
+            
+                LogError("context->g_criticalSection");
+               
+            }
+		}
+		else{
+			 LogError("context->g_criticalSection");
+		}
 	
 }
 

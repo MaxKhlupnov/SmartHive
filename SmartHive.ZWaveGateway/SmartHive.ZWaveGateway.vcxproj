@@ -85,8 +85,8 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>../iot-edge/build/core;/home/makhlu/projects/SmartHive.ZWaveModule/bin/x64/Debug;</LibraryPath>
-    <IncludePath>$(IncludePath);$(ISenseIncludePath);../include;../iot-edge/install-deps/include;../iot-edge/install-deps/include/azureiot;../iot-edge/install-deps/include/azureiot/azure_c_shared_utility;../iot-edge/core/inc;../iot-edge/modules/common;</IncludePath>
+    <LibraryPath>../iot-edge/v1/build/core;/home/makhlu/projects/SmartHive.ZWaveModule/bin/x64/Debug;</LibraryPath>
+    <IncludePath>$(IncludePath);$(ISenseIncludePath);../include;../iot-edge/v1/install-deps/include;../iot-edge/v1/install-deps/include/azureiot;../iot-edge/v1/install-deps/include/azureiot/azure_c_shared_utility;../iot-edge/v1/core/inc;../iot-edge/v1/modules/common</IncludePath>
     <SourcePath>$(SolutionDir)SmartHive.ZWaveModule</SourcePath>
     <AdditionalSourcesToCopyMapping>C:\PROJECTS\GitHub\SmartHive\SmartHive.ZWaveModule:=/home/makhlu/projects/SmartHive.ZWaveGateway;</AdditionalSourcesToCopyMapping>
   </PropertyGroup>

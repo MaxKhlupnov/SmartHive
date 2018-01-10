@@ -68,7 +68,7 @@ static void ZwaveDevice_Destroy(MODULE_HANDLE moduleHandle)
 	else
 	{
 		ZWAVEDEVICE_DATA* module_data = (ZWAVEDEVICE_DATA*)moduleHandle;
-		int result;
+//		int result;
 
 		/* Tell thread to stop */
 		module_data->zwaveDeviceRunning = 0;		

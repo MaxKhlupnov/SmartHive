@@ -1,5 +1,6 @@
 #pragma once
 //#include <pthread.h>
+#include "azure_c_shared_utility/lock.h"
 #include "Manager.h"
 #include "Defs.h"
 #include "value_classes/ValueID.h"
@@ -28,7 +29,7 @@ static list<NodeInfo*> g_nodes;
 
 class OpenZWaveAdapter
 {
-	pthread_mutex_t* g_criticalSection;
+ LOCK_HANDLE g_criticalSection = Lock_Init();
 
 public:
 	OpenZWaveAdapter(ZWAVEDEVICE_DATA * module_data);
