@@ -24,10 +24,10 @@
           },
           "args": [
             {
-              "networkId": "<<insert here zwave networkId in hex for example: cdeea6d8>>",
-              "nodeId": "insert here zwave nodeId in hex for example: 07",
-              "deviceId": "<<insert here deviceId>>",
-              "deviceKey": "<<insert here deviceKey>>"
+              "networkId": "123",
+              "nodeId": "123",
+              "deviceId": "123",
+              "deviceKey": "123"
             }
           ]
         },
@@ -52,8 +52,8 @@
             }
           },
           "args": {
-            "IoTHubName": "<<insert here IoTHubName>>",
-            "IoTHubSuffix": "<<insert here IoTHubSuffix>>",
+            "IoTHubName": "123",
+            "IoTHubSuffix": "123",
             "Transport": "AMQP"
           }
         }

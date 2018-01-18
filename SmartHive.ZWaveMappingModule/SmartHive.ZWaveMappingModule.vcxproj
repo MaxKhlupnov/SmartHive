@@ -70,7 +70,7 @@
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>../iot-edge/v1/core/inc;../include;../iot-edge/v1/install-deps/include;../iot-edge/v1/install-deps/include/azureiot;../iot-edge/v1/install-deps/include/azureiot/azure_c_shared_utility;../iot-edge/v1/install-deps/include/azureiot/azure_uamqp_c;../iot-edge/v1/install-deps/include/azureiot/azure_umqtt_c;../iot-edge/v1/modules/common;../include/x86_64-linux-gnu/bits;$(IncludePath)</IncludePath>
+    <IncludePath>../iot-edge/core/inc;../include;../iot-edge/install-deps/include;../iot-edge/install-deps/include/azureiot;../iot-edge/install-deps/include/azureiot/azure_c_shared_utility;../iot-edge/install-deps/include/azureiot/azure_uamqp_c;../iot-edge/install-deps/include/azureiot/azure_umqtt_c;../iot-edge/modules/common;../include/x86_64-linux-gnu/bits;$(IncludePath)</IncludePath>
     <LibraryPath>../iot-edge/build/core;</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
     <TargetExt>.so</TargetExt>
@@ -80,6 +80,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ZWaveIdentityMap.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <Link>
