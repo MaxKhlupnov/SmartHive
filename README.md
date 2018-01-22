@@ -18,8 +18,9 @@
 <p>In the shell, run the following command to clone the Azure IoT Edge GitHub repository to your local machine:</p>
   <pre>git clone --recursive https://github.com/MaxKhlupnov/SmartHive SmartHive</pre>
 </li>
-<li>Open a shell.</li>
-<li>Navigate to the root folder in your local copy of the SmartHive repository.<li>
+<li>Open a shell.
+  Navigate to the root folder in your local copy of the SmartHive repository.
+</li>
 <li>
     <h3>Compile and install OpenZWave</h3>
     <p>Run the build script as follows:</p>
@@ -28,9 +29,9 @@
 </li>
 <li>
     <h3>Merge SmartHive project and iot-edge project for compilation</h3>
-    <div>Copy <pre>SmartHive.ZWaveModule</pre> and <pre>SmartHive.ZWaveMappingModule</pre> folders into <pre>iot-edge/modules</pre> directory</div>
-    <div>Copy <pre>SmartHive.ZWaveGateway</pre> folders into <pre>iot-edge/samples</pre> directory</div>
-    <div>Prepare iot-edge CMakeLists.txt for compilation. Run scripts as follows:</p></div>
+    <div>Copy <i>SmartHive.ZWaveModule</i> and <i>SmartHive.ZWaveMappingModule</i> folders into <i>iot-edge/modules</i> directory</div>
+    <div>Copy <i>SmartHive.ZWaveGateway</i> folders into <i>iot-edge/samples</i> directory</div>
+    <p>Prepare iot-edge CMakeLists.txt for compilation. Run scripts as follows:</p>
     <pre> printf "\n add_subdirectory(SmartHive.ZWaveGateway) \n" >> $HOME/src/iot-edge/samples/CMakeLists.txt</pre>
     <pre> printf "\n add_subdirectory(SmartHive.ZWaveModule)\n add_subdirectory(SmartHive.ZWaveMappingModule) \n" >> $HOME/src/iot-edge/modules/CMakeLists.txt</pre>
 </li>
