@@ -58,8 +58,14 @@
 
 <h2>How to run</h2>
 <ul>
-  <li>Run <a href="SmartHive.ZWaveGateway">SmartHive.ZWaveGateway</a> same ways as https://github.com/Azure/iot-edge/tree/master/v1/samples/simulated_device_cloud_upload.</li>
+  <li>
+  <p>Run <a href="SmartHive.ZWaveGateway">SmartHive.ZWaveGateway</a> same ways as https://github.com/Azure/iot-edge/tree/master/v1/samples/simulated_device_cloud_upload.</p>
   <pre>samples/SmartHive.ZWaveGateway/SmartHive.ZWaveGateway zwave_device_cloud_upload_&lt;your platform&gt;.json</pre>
+  </li>
+  <li>
+  <p>Run Docker container as follow:</p>
+  <pre>sudo docker run -p 8008:8008 -i -t --privileged  --device /dev/ttyACM0 openzwave/openzwave-control-panel /bin/bash</pre>
+  </li>
 </ul>
 
 <h2>There are three parts in the project. </h2>
