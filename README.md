@@ -5,25 +5,63 @@
 <li><a href="https://github.com/OpenZWave/open-zwave">Open Z-Wave</a> - free software library that interfaces with Z-Wave protocol stack.</li>
 </ul>
 
-<div>How to build sources</div>
-<ul>
-  <li><div>Run following script:</div>
-  <code>apt-get -y update && apt-get -y install libgnutls28-dev libgnutlsxx28 libudev-dev libyaml-dev curl build-essential libcurl4-openssl-dev git cmake make libssl-dev \       uuid-dev valgrind libglib2.0-dev libtool autoconf nano sudo
-  </code>
-  </li>
-</ul>
 
-<div>How to build Docker image</div>
-<ul>
+<h2>How to build modules</h2>
+<p>You can now build the IoT Edge runtime and samples on your local machine:</p>
+<ol>
+<li>
+  <h3>Install the prerequisites</h3>
+<p>The steps in this tutorial assume you are running Ubuntu Linux.</p>
+<p>To install the prerequisite packages, open a shell and run the following commands:</p>
+  <pre>apt-get -y update && apt-get -y install libgnutls28-dev libgnutlsxx28 libudev-dev libyaml-dev curl build-essential libcurl4-openssl-dev git cmake make libssl-dev uuid-dev valgrind libglib2.0-dev libtool autoconf nano sudo
+  </pre>
+<p>In the shell, run the following command to clone the Azure IoT Edge GitHub repository to your local machine:</p>
+  <pre>git clone --recursive https://github.com/MaxKhlupnov/SmartHive SmartHive</pre>
+</li>
+<li>Open a shell.</li>
+<li>Navigate to the root folder in your local copy of the SmartHive repository.<li>
+<li>
+    <h3>Compile and install OpenZWave</h3>
+    <p>Run the build script as follows:</p>
+      <pre>cd open-zwave && make && make install && ldconfig /usr/local/lib64</pre>      
+     <p>See https://github.com/OpenZWave/open-zwave for more info</p>
+</li>
+<li>
+    <h3>Merge SmartHive project and iot-edge project for compilation</h3>
+    <div>Copy <pre>SmartHive.ZWaveModule</pre> and <pre>SmartHive.ZWaveMappingModule</pre> folders into <pre>iot-edge/modules</pre> directory</div>
+    <div>Copy <pre>SmartHive.ZWaveGateway</pre> folders into <pre>iot-edge/samples</pre> directory</div>
+    <div>Prepare iot-edge CMakeLists.txt for compilation. Run scripts as follows:</p></div>
+    <pre> printf "\n add_subdirectory(SmartHive.ZWaveGateway) \n" >> $HOME/src/iot-edge/samples/CMakeLists.txt</pre>
+    <pre> printf "\n add_subdirectory(SmartHive.ZWaveModule)\n add_subdirectory(SmartHive.ZWaveMappingModule) \n" >> $HOME/src/iot-edge/modules/CMakeLists.txt</pre>
+</li>
+<li>
+    <h3>Compile iot-edge with SmartHive modules</h3>
+    <p>Run the build script from iot-edge directory as follows:</p>
+      <pre>tools/build.sh --disable-native-remote-modules</pre>
+      <p>See https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-linux-iot-edge-get-started for more info</p>           
+</li>
+<li>
+    Compiled modules and gateway sample will be placed in the iot-edge\build directory
+</li>
+
+</ol>
+
+<h2>How to build Docker image</h2>
+<ol>
   <li><a href='https://docs.docker.com/engine/installation/'>Install Docker</a></li>
-</ul>
+  <p>In the shell, run the following command to clone the Azure IoT Edge GitHub repository to your local machine:</p>
+  <pre>git clone https://github.com/MaxKhlupnov/SmartHive SmartHive</pre>
+  <p>Run script as follow from Docker folder</p>
+  <pre>docker build -t zwavemodule ./</pre>
+</ol>
 
-<div>How to deploy</div>
+<h2>How to run</h2>
 <ul>
-  <li><a href="SmartHive.ZWaveGateway">SmartHive.ZWaveGateway</a> is IoT Edge gateway that forwards telemetry from a ZWave devices to IoT Hub.</li>
+  <li>Run <a href="SmartHive.ZWaveGateway">SmartHive.ZWaveGateway</a> same ways as https://github.com/Azure/iot-edge/tree/master/v1/samples/simulated_device_cloud_upload.</li>
+  <pre>samples/SmartHive.ZWaveGateway/SmartHive.ZWaveGateway zwave_device_cloud_upload_&lt;your platform&gt;.json</pre>
 </ul>
 
-<div>There are three parts in the project. </div>
+<h2>There are three parts in the project. </h2>
 <ul>
   <li><a href="SmartHive.ZWaveGateway">SmartHive.ZWaveGateway</a> is IoT Edge gateway that forwards telemetry from a ZWave devices to IoT Hub.</li>
   <li><a href="SmartHive.ZWaveModule">SmartHive.ZWaveModule</a> is a Azure IoT Gateway SDK module, capable of reading data from ZWave devices and publish the data to the Azure IoT Hub via <a href="SmartHive.ZWaveMappingModule">SmartHive.ZWaveMappingModule</a></li>

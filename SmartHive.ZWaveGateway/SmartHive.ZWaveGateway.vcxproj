@@ -52,6 +52,16 @@
   <ItemGroup>
     <Text Include="CMakeLists.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Xsd Include="zwave_device_cloud_upload_docker.json">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x86'">true</ExcludedFromBuild>
+    </Xsd>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8884dbf5-aed5-4910-b4dc-dc97dafd29ac}</ProjectGuid>
     <Keyword>Linux</Keyword>

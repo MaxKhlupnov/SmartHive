@@ -1,0 +1,75 @@
+﻿{
+  "modules": [
+    {
+      "name": "ZWaveModule",
+      "loader": {
+        "name": "native",
+        "entrypoint": {
+          "module.path": "../../modules/SmartHive.ZWaveModule/libSmartHive.ZWaveModule.so"
+        }
+      },
+      "args": {
+        "sendNotificationOfType": "Type_ValueChanged",
+        "controllerPath": "/dev/ttyS0",
+        "zwaveConfigPath": "../../../../open-zwave/config/"
+      }
+    },
+        {
+          "name": "mapping",
+          "loader": {
+            "name": "native",
+            "entrypoint": {
+              "module.path": "../../modules/SmartHive.ZWaveMappingModule/libSmartHive.ZWaveMappingModule.so"
+            }
+          },
+          "args": [
+            {
+              "networkId": "<<insert here zwave networkId in hex for example: cdeea6d8>>",
+              "nodeId": "<<insert here zwave nodeId in hex for example: 07>>",
+              "deviceId": "<<insert here deviceId>>",
+              "deviceKey": "<<insert here deviceKey>>"
+            }
+          ]
+        },
+        {
+          "name": "Logger",
+          "loader": {
+            "name": "native",
+            "entrypoint": {
+              "module.path": "../../modules/logger/liblogger.so"
+            }
+          },
+          "args": {
+            "filename": "deviceCloudUploadGatewaylog.log"
+          }
+        },
+          {
+          "name": "IotHub",
+          "loader": {
+            "name": "native",
+            "entrypoint": {
+              "module.path": "../../modules/iothub/libiothub.so"
+            }
+          },
+            "args": {
+              "IoTHubName": "<<insert here IoTHubName>>",
+              "IoTHubSuffix": "<<insert here IoTHubSuffix>>",
+              "Transport": "AMQP"
+            }
+        }
+      ],
+  "links": [
+    {
+      "source": "*",
+      "sink": "Logger"
+    },
+    {
+      "source": "ZWaveModule",
+      "sink": "mapping"
+    },
+    {
+      "source": "mapping",
+      "sink": "IotHub"
+    }
+  ]
+    }
