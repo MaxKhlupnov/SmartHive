@@ -94,6 +94,10 @@ RUN printf "\n add_subdirectory(SmartHive.ZWaveModule)\n add_subdirectory(SmartH
 WORKDIR		$HOME/src/iot-edge/
 RUN			tools/build.sh --disable-native-remote-modules
 
+# Copy sample configuration file
+RUN     cp $HOME/src/SmartHive.ZWaveGateway/zwave_device_cloud_upload_linARM.json $HOME/src/iot-edge/samples/SmartHive.ZWaveGateway/zwave_upload_config.json
+
+
 # Install OpenZWave Device Database (https://github.com/OpenZWave/open-zwave/wiki/Adding-Devices)
 USER		smarthive_user
 WORKDIR		$HOME
