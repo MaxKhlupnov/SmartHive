@@ -102,3 +102,12 @@ RUN     cp $HOME/src/SmartHive.ZWaveGateway/zwave_device_cloud_upload_linARM.jso
 USER		smarthive_user
 WORKDIR		$HOME
 RUN			ln -s /usr/local/etc/openzwave $HOME/config
+
+
+################################################################################
+USER		root
+WORKDIR		$HOME
+
+ADD			init.bash /root/init.bash
+ENTRYPOINT	[ "/bin/bash", "/root/init.bash" ]
+################################################################################
