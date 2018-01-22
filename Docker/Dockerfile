@@ -1,3 +1,6 @@
+# Azure IoT Edge gateway modules for Zwave protocol
+# Max R. Khlupnov (@MaxKhlupnov)
+#
 # Example usage:
 #
 # Build
@@ -19,10 +22,10 @@
 # www.GotGetLLC.com | www.opensour.cc/ggcom/docker/openzwave
 #
 ################################################################################
-FROM		ubuntu:latest
-LABEL maintainer="m.khlupnov@gmail.com"
-LABEL version="0.1"
-LABEL description="Azure IoT Edge gateway modules for Zwave protocol.."
+FROM        ubuntu:latest
+LABEL       maintainer="m.khlupnov@gmail.com"
+LABEL       version="0.1"
+LABEL       description="Azure IoT Edge gateway modules for Zwave protocol.."
 
 # Initial prerequisites
 USER		root
