@@ -75,13 +75,14 @@ USER		root
 WORKDIR		$HOME/src/open-zwave/
 RUN			make install && ldconfig /usr/local/lib64
 
+WORKDIR		$HOME/src/
 # Copy SmartHive.ZWave modules into iot-edge project
 RUN			mkdir -p $HOME/src/iot-edge/modules/SmartHive.ZWaveModule
-COPY $HOME/src/SmartHive.ZWaveModule $HOME/src/iot-edge/modules/SmartHive.ZWaveModule
+RUN         cp -r $HOME/src/SmartHive.ZWaveModule $HOME/src/iot-edge/modules
 RUN			mkdir -p $HOME/src/iot-edge/modules/SmartHive.ZWaveMappingModule
-COPY $HOME/src/SmartHive.ZWaveMappingModule $HOME/src/iot-edge/modules/SmartHive.ZWaveMappingModule
+RUN         cp -r $HOME/src/SmartHive.ZWaveMappingModule $HOME/src/iot-edge/modules
 RUN			mkdir -p $HOME/src/iot-edge/samples/SmartHive.ZWaveGateway
-COPY $HOME/src/SmartHive.ZWaveGateway $HOME/src/iot-edge/samples/SmartHive.ZWaveGateway
+RUN         cp -r $HOME/src/SmartHive.ZWaveGateway $HOME/src/iot-edge/samples
 # Prepare iot-edge CMakeLists.txt for compilation
 RUN printf "\n add_subdirectory(SmartHive.ZWaveGateway) \n" >> $HOME/src/iot-edge/samples/CMakeLists.txt
 RUN printf "\n add_subdirectory(SmartHive.ZWaveModule)\n add_subdirectory(SmartHive.ZWaveMappingModule) \n" >> $HOME/src/iot-edge/modules/CMakeLists.txt
@@ -91,6 +92,6 @@ WORKDIR		$HOME/src/iot-edge/
 RUN			tools/build.sh --disable-native-remote-modules
 
 # Install OpenZWave Device Database (https://github.com/OpenZWave/open-zwave/wiki/Adding-Devices)
-USER		python_user
+USER		smarthive_user
 WORKDIR		$HOME
 RUN			ln -s /usr/local/etc/openzwave $HOME/config
