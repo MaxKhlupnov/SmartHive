@@ -13,7 +13,7 @@
   <h3>Install the prerequisites</h3>
 <p>The steps in this tutorial assume you are running Ubuntu Linux.</p>
 <p>To install the prerequisite packages, open a shell and run the following commands:</p>
-  <pre>apt-get -y update && apt-get -y install libgnutls28-dev libgnutlsxx28 libudev-dev libyaml-dev curl build-essential libcurl4-openssl-dev git cmake make libssl-dev uuid-dev valgrind libglib2.0-dev libtool autoconf nano sudo
+  <pre>sudo apt-get -y update && apt-get -y install libgnutls28-dev libgnutlsxx28 libudev-dev libyaml-dev curl build-essential libcurl4-openssl-dev git cmake make libssl-dev uuid-dev valgrind libglib2.0-dev libtool autoconf nano sudo
   </pre>
 <p>In the shell, run the following command to clone the Azure IoT Edge GitHub repository to your local machine:</p>
   <pre>git clone --recursive https://github.com/MaxKhlupnov/SmartHive SmartHive</pre>
