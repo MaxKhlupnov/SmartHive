@@ -32,8 +32,8 @@
     <div>Copy <i>SmartHive.ZWaveModule</i> and <i>SmartHive.ZWaveMappingModule</i> folders into <i>iot-edge/modules</i> directory</div>
     <div>Copy <i>SmartHive.ZWaveGateway</i> folders into <i>iot-edge/samples</i> directory</div>
     <p>Prepare iot-edge CMakeLists.txt for compilation. Run scripts as follows:</p>
-    <pre> printf "\n add_subdirectory(SmartHive.ZWaveGateway) \n" >> $HOME/src/iot-edge/samples/CMakeLists.txt</pre>
-    <pre> printf "\n add_subdirectory(SmartHive.ZWaveModule)\n add_subdirectory(SmartHive.ZWaveMappingModule) \n" >> $HOME/src/iot-edge/modules/CMakeLists.txt</pre>
+    <pre> printf "\n add_subdirectory(SmartHive.ZWaveGateway) \n" >> $HOME/SmartHive/iot-edge/samples/CMakeLists.txt</pre>
+    <pre> printf "\n add_subdirectory(SmartHive.ZWaveModule)\n add_subdirectory(SmartHive.ZWaveMappingModule) \n" >> $HOME/SmartHive/iot-edge/modules/CMakeLists.txt</pre>
 </li>
 <li>
     <h3>Compile iot-edge with SmartHive modules</h3>
