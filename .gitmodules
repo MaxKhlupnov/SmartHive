@@ -4,3 +4,6 @@
 [submodule "iot-edge"]
 	path = iot-edge
 	url = https://github.com/Azure/iot-edge
+[submodule "paho.mqtt.cpp"]
+	path = paho.mqtt.cpp
+	url = https://github.com/eclipse/paho.mqtt.cpp
