@@ -1,4 +1,7 @@
-#pragma once
+#ifndef MQTT_DEVICE_H
+
+#define MQTT_DEVICE_H
+
 #include "module.h"
 #include "broker.h"
 #include "azure_c_shared_utility/threadapi.h"
@@ -33,3 +36,5 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
+
+#endif /*MQTT_DEVICE_H*/
