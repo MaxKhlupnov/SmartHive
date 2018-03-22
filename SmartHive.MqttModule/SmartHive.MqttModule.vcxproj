@@ -96,7 +96,7 @@
       <PositionIndependentCode>true</PositionIndependentCode>
     </ClCompile>
     <Link>
-      <LibraryDependencies>gateway;pthread;aziotsharedutil;iothub_client;iothub_client_amqp_transport;uuid;%(LibraryDependencies)</LibraryDependencies>
+      <LibraryDependencies>gateway;aziotsharedutil;%(LibraryDependencies)</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
