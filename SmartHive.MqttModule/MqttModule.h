@@ -8,13 +8,13 @@
 
 typedef struct MQTT_CONFIG_TAG
 {	
-	const char*			mqttBrokerAddress;
-	unsigned int		mqttBrokerPort;
-	const char*			clientId;
-	const char*			topic;
-	unsigned int		QoS;
-	const char*			caCertFile;
-	const char*			clientCertFile;
+	char*			mqttBrokerAddress;
+	unsigned int	mqttBrokerPort;
+	char*			clientId;
+	char*			topic;
+	unsigned int	QoS;
+	char*			caCertFile;
+	char*			clientCertFile;
 	
 } MQTT_CONFIG;
 

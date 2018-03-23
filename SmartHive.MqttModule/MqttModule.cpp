@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <parson.h>
 
 #include "MqttModule.h"
 #include "azure_c_shared_utility/threadapi.h"
@@ -9,11 +10,80 @@
 #include "module.h"
 #include "broker.h"
 
-#include <parson.h>
+
 
 static void * MqttGateway_ParseConfigurationFromJson(const char* configuration)
 {
+	LogInfo("MqttGateway_ParseConfigurationFromJson call..");
 	MQTT_CONFIG * result;
+	
+	if (configuration == NULL)
+	{
+		LogError("invalid module args.");
+		result = NULL;
+	}
+	else
+	{
+		JSON_Value* json = json_parse_string((const char*)configuration);
+		if (json == NULL)
+		{
+			LogError("unable to json_parse_string");
+			result = NULL;
+		}
+		else
+		{
+			JSON_Object* root = json_value_get_object(json);
+			if (root == NULL)
+			{
+				LogError("unable to json_value_get_object");
+				result = NULL;
+			}
+			else
+			{
+				MQTT_CONFIG config;
+
+				const char* mqttBrokerAddress = json_object_get_string(root, "mqttBrokerAddress");
+				if (mqttBrokerAddress == NULL)
+				{
+					LogError("unable to json_object_get_string for mqttBrokerAddress");
+					result = NULL;
+				}
+				else if (mallocAndStrcpy_s(&(config.mqttBrokerAddress), mqttBrokerAddress) != 0)
+				{
+					LogError("Error allocating memory for controllerPath string");
+					result = NULL;
+				}
+				else
+				{
+					const char* sMqttBrokerPort = json_object_get_string(root, "mqttBrokerPort");					
+					if (sMqttBrokerPort == NULL)
+					{
+						LogError("unable to json_object_get_string for mqttBrokerPort");
+						result = NULL;
+					}
+					else if (sscanf(sMqttBrokerPort, "%d", &config.mqttBrokerPort) < 0)
+					{
+						LogError("Wrong parameter mqttBrokerPort value %s(should be an integer number of port)", sMqttBrokerPort);
+						result = NULL;
+					}
+					else
+					{
+
+
+						result = (MQTT_CONFIG*)malloc(sizeof(MQTT_CONFIG));
+						if (result == NULL) {
+							free(config.mqttBrokerAddress);
+						}
+						else {
+							*result = config;
+							LogInfo("MqttGateway config record: mqttBrokerAddress->%s mqttBrokerPort->%d", 
+								result->mqttBrokerAddress, result->mqttBrokerPort);
+						}
+					}
+				}
+			}
+		}
+	}
 
 	return result;
 }
@@ -60,7 +130,7 @@ static void MqttGateway_Receive(MODULE_HANDLE moduleHandle, MESSAGE_HANDLE messa
 
 static void MqttGateway_Start(MODULE_HANDLE moduleHandle)
 {
-	LogInfo("ZwaveDevice_Start call..");
+	LogInfo("MqttGateway_Start call..");
 	if (moduleHandle == NULL)
 	{
 		LogError("Attempt to start NULL module");
