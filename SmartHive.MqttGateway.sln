@@ -7,8 +7,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmartHive.MqttGateway", "Sm
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmartHive.MqttModule", "SmartHive.MqttModule\SmartHive.MqttModule.vcxproj", "{D85AC2C5-2B0C-40AB-B614-8C9B1628FD77}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmartHive.ZWaveModule", "SmartHive.ZWaveModule\SmartHive.ZWaveModule.vcxproj", "{9ACE489E-2E23-4897-AC5C-97AE9605A092}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -43,18 +41,6 @@ Global
 		{D85AC2C5-2B0C-40AB-B614-8C9B1628FD77}.Release|x64.Build.0 = Release|x64
 		{D85AC2C5-2B0C-40AB-B614-8C9B1628FD77}.Release|x86.ActiveCfg = Release|x86
 		{D85AC2C5-2B0C-40AB-B614-8C9B1628FD77}.Release|x86.Build.0 = Release|x86
-		{9ACE489E-2E23-4897-AC5C-97AE9605A092}.Debug|ARM.ActiveCfg = Debug|ARM
-		{9ACE489E-2E23-4897-AC5C-97AE9605A092}.Debug|ARM.Build.0 = Debug|ARM
-		{9ACE489E-2E23-4897-AC5C-97AE9605A092}.Debug|x64.ActiveCfg = Debug|x64
-		{9ACE489E-2E23-4897-AC5C-97AE9605A092}.Debug|x64.Build.0 = Debug|x64
-		{9ACE489E-2E23-4897-AC5C-97AE9605A092}.Debug|x86.ActiveCfg = Debug|x86
-		{9ACE489E-2E23-4897-AC5C-97AE9605A092}.Debug|x86.Build.0 = Debug|x86
-		{9ACE489E-2E23-4897-AC5C-97AE9605A092}.Release|ARM.ActiveCfg = Release|ARM
-		{9ACE489E-2E23-4897-AC5C-97AE9605A092}.Release|ARM.Build.0 = Release|ARM
-		{9ACE489E-2E23-4897-AC5C-97AE9605A092}.Release|x64.ActiveCfg = Release|x64
-		{9ACE489E-2E23-4897-AC5C-97AE9605A092}.Release|x64.Build.0 = Release|x64
-		{9ACE489E-2E23-4897-AC5C-97AE9605A092}.Release|x86.ActiveCfg = Release|x86
-		{9ACE489E-2E23-4897-AC5C-97AE9605A092}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

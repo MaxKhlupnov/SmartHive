@@ -4,6 +4,7 @@
 
 #include "module.h"
 #include "broker.h"
+#include "azure_c_shared_utility/threadapi.h"
 
 typedef struct MQTT_CONFIG_TAG
 {	
