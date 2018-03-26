@@ -12,6 +12,25 @@
 
 #include "mqtt/async_client.h"
 
+/**
+* A callback class for use with the main MQTT client.
+*/
+class callback : public virtual mqtt::callback
+{
+public:
+	void connected(const mqtt::string& cause)  override {
+		LogInfo("Mqtt broker connected", cause);
+	}
+	void connection_lost(const mqtt::string& cause) override {
+
+		LogError("Mqtt broker connection lost", cause);
+	}
+
+	void delivery_complete(mqtt::delivery_token_ptr tok) override {
+	}
+
+};
+
 
 static void * MqttGateway_ParseConfigurationFromJson(const char* configuration)
 {
@@ -51,7 +70,7 @@ static void * MqttGateway_ParseConfigurationFromJson(const char* configuration)
 				}
 				else if (mallocAndStrcpy_s(&(config.mqttBrokerAddress), mqttBrokerAddress) != 0)
 				{
-					LogError("Error allocating memory for controllerPath string");
+					LogError("Error allocating memory for mqttBrokerAddress string");
 					result = NULL;
 				}
 				else
@@ -59,8 +78,8 @@ static void * MqttGateway_ParseConfigurationFromJson(const char* configuration)
 					const char* sMqttBrokerPort = json_object_get_string(root, "mqttBrokerPort");					
 					if (sMqttBrokerPort == NULL)
 					{
-						LogError("unable to json_object_get_string for mqttBrokerPort");
-						result = NULL;
+						//Set 1883 as a default MQTT port
+						config.mqttBrokerPort = 1883;
 					}
 					else if (sscanf(sMqttBrokerPort, "%d", &config.mqttBrokerPort) < 0)
 					{
@@ -69,16 +88,30 @@ static void * MqttGateway_ParseConfigurationFromJson(const char* configuration)
 					}
 					else
 					{
-						/// TODO: Add other parameters parsing
-
-						result = (MQTT_CONFIG*)malloc(sizeof(MQTT_CONFIG));
-						if (result == NULL) {
-							free(config.mqttBrokerAddress);
+						const char* clientId = json_object_get_string(root, "clientId");
+						if (clientId == NULL)
+						{
+							LogError("unable to json_object_get_string for clientId");
+							result = NULL;
 						}
-						else {
-							*result = config;
-							LogInfo("MqttGateway config record: mqttBrokerAddress->%s mqttBrokerPort->%d", 
-								result->mqttBrokerAddress, result->mqttBrokerPort);
+						else if (mallocAndStrcpy_s(&(config.clientId), clientId) != 0) {
+							LogError("Error allocating memory for clientId string");
+							result = NULL;
+						}
+						else
+						{
+							/// TODO: Add other parameters parsing
+
+							result = (MQTT_CONFIG*)malloc(sizeof(MQTT_CONFIG));
+							if (result == NULL) {
+								free(config.mqttBrokerAddress);
+								free(config.clientId);
+							}
+							else {
+								*result = config;
+								LogInfo("MqttGateway config record: mqttBrokerAddress->%s mqttBrokerPort->%d",
+									result->mqttBrokerAddress, result->mqttBrokerPort);
+							}
 						}
 					}
 				}
@@ -99,7 +132,24 @@ static MODULE_HANDLE MqttGateway_Create(BROKER_HANDLE broker, const void* config
 	LogInfo("MqttGateway_Create_Create call..");
 	MQTT_GATEWAY_DATA * result;
 	MQTT_CONFIG * config = (MQTT_CONFIG *)configuration;
+	
+	int serverURILen = printf("%s:%d", config->mqttBrokerAddress, config->mqttBrokerPort);
+	char serverURI [serverURILen+1];
+	
+	if (sprintf_s(serverURI, sizeof(serverURI), "%s:%d", config->mqttBrokerAddress, config->mqttBrokerPort) < 0) {
+		LogError("Error formatting server URI");
+	}
 
+	LogInfo("Initializing for server %s", serverURI);
+
+	mqtt::async_client client(serverURI, config->clientId);
+	
+	callback cb;
+	client.set_callback(cb);
+
+	mqtt::connect_options conopts;
+	
+	
 
 	return result;
 }
