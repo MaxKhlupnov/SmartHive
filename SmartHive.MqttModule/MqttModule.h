@@ -13,6 +13,8 @@ typedef struct MQTT_CONFIG_TAG
 	char*			clientId;
 	char*			topic;
 	unsigned int	QoS;
+	char*			login;
+	char*			password;
 	char*			caCertFile;
 	char*			clientCertFile;
 	

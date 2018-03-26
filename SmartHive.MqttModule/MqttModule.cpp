@@ -10,6 +10,7 @@
 #include "module.h"
 #include "broker.h"
 
+#include "mqtt/async_client.h"
 
 
 static void * MqttGateway_ParseConfigurationFromJson(const char* configuration)
@@ -68,7 +69,7 @@ static void * MqttGateway_ParseConfigurationFromJson(const char* configuration)
 					}
 					else
 					{
-
+						/// TODO: Add other parameters parsing
 
 						result = (MQTT_CONFIG*)malloc(sizeof(MQTT_CONFIG));
 						if (result == NULL) {

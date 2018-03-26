@@ -75,7 +75,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <NMakeIncludeSearchPath>C:\PROJECTS\GitHub\SmartHive\SmartHive.ZWaveModule\inc;C:\PROJECTS\GitHub\SmartHive\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
-    <IncludePath>../open-zwave/cpp/src;../include;../iot-edge/install-deps/include;../iot-edge/install-deps/include/azureiot;../iot-edge/install-deps/include/azureiot/azure_uamqp_c;../iot-edge/install-deps/include/azureiot/azure_umqtt_c;../iot-edge/core/inc;../iot-edge/modules/common;../include/x86_64-linux-gnu/bits;$(IncludePath)</IncludePath>
+    <IncludePath>../paho.mqtt.cpp/src;../paho.mqtt.c/src;../include;../iot-edge/install-deps/include;../iot-edge/install-deps/include/azureiot;../iot-edge/install-deps/include/azureiot/azure_uamqp_c;../iot-edge/install-deps/include/azureiot/azure_umqtt_c;../iot-edge/core/inc;../iot-edge/modules/common;../include/x86_64-linux-gnu;$(IncludePath)</IncludePath>
     <LibraryPath>../iot-edge/build/core;</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
     <TargetExt>.so</TargetExt>
@@ -110,7 +110,7 @@
       <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
-      <LibraryDependencies>gateway;pthread;aziotsharedutil;iothub_client;iothub_client_amqp_transport;uuid;%(LibraryDependencies)</LibraryDependencies>
+      <LibraryDependencies>gateway;paho-mqttpp3;pthread;aziotsharedutil;iothub_client;iothub_client_amqp_transport;uuid;%(LibraryDependencies)</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
