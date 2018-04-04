@@ -2,6 +2,7 @@
 #include <parson.h>
 
 #include "MqttModule.h"
+#include "MqttAdapter.h"
 #include "azure_c_shared_utility/threadapi.h"
 #include "azure_c_shared_utility/xlogging.h"
 #include "azure_c_shared_utility/crt_abstractions.h"
@@ -10,26 +11,44 @@
 #include "module.h"
 #include "broker.h"
 
-#include "mqtt/async_client.h"
 
-/**
-* A callback class for use with the main MQTT client.
-*/
-class callback : public virtual mqtt::callback
-{
-public:
-	void connected(const mqtt::string& cause)  override {
-		LogInfo("Mqtt broker connected", cause);
+
+
+
+static bool copyConfigValueAsString(const JSON_Object *jsonData, const char *propertyName, char** propertyValue) {
+
+	const char* tmpValue = json_object_get_string(jsonData, propertyName);
+	if (tmpValue == NULL)
+	{
+		LogError("call json_object_get_string for %s return NULL or error", propertyName);
+		return false;
 	}
-	void connection_lost(const mqtt::string& cause) override {
-
-		LogError("Mqtt broker connection lost", cause);
+	else if (mallocAndStrcpy_s(propertyValue, tmpValue) != 0) {
+		LogError("Error allocating memory for property %s string value %s", propertyName, propertyValue);
+		return false;
 	}
-
-	void delivery_complete(mqtt::delivery_token_ptr tok) override {
+	else {
+		return true;
 	}
+}
 
-};
+static bool copyConfigValueAsInt(const JSON_Object *jsonData, const char *propertyName, unsigned int* propertyValue) {
+
+	const char* tmpValue = json_object_get_string(jsonData, propertyName);
+	if (tmpValue == NULL)
+	{
+		LogError("call json_object_get_string for {0} return NULL or error", propertyName);
+		return false;
+	}
+	else if (sscanf(tmpValue, "%d", propertyValue) < 0)
+	{
+		LogError("Wrong parameter %s value %s(should be an integer number of port)", propertyName, tmpValue);
+		return false;
+	}
+	else {
+		return true;
+	}
+}
 
 
 static void * MqttGateway_ParseConfigurationFromJson(const char* configuration)
@@ -61,66 +80,45 @@ static void * MqttGateway_ParseConfigurationFromJson(const char* configuration)
 			else
 			{
 				MQTT_CONFIG config;
+				// Check if we can read all required properties first
+				if (copyConfigValueAsString(root, "mqttBrokerAddress", &(config.mqttBrokerAddress)) &&
+					copyConfigValueAsString(root, "clientId", &(config.clientId)) &&
+					(copyConfigValueAsString(root, "topic2Publish", &(config.topic2Publish)) 
+						|| copyConfigValueAsString(root, "topic2Subscribe", &(config.topic2Subscribe)))
+					) {
 
-				const char* mqttBrokerAddress = json_object_get_string(root, "mqttBrokerAddress");
-				if (mqttBrokerAddress == NULL)
-				{
-					LogError("unable to json_object_get_string for mqttBrokerAddress");
-					result = NULL;
-				}
-				else if (mallocAndStrcpy_s(&(config.mqttBrokerAddress), mqttBrokerAddress) != 0)
-				{
-					LogError("Error allocating memory for mqttBrokerAddress string");
-					result = NULL;
-				}
-				else
-				{
-					const char* sMqttBrokerPort = json_object_get_string(root, "mqttBrokerPort");					
-					if (sMqttBrokerPort == NULL)
-					{
+					if (!copyConfigValueAsInt(root, "mqttBrokerPort", &config.mqttBrokerPort)) {
 						//Set 1883 as a default MQTT port
 						config.mqttBrokerPort = 1883;
 					}
-					else if (sscanf(sMqttBrokerPort, "%d", &config.mqttBrokerPort) < 0)
-					{
-						LogError("Wrong parameter mqttBrokerPort value %s(should be an integer number of port)", sMqttBrokerPort);
-						result = NULL;
-					}
-					else
-					{
-						const char* clientId = json_object_get_string(root, "clientId");
-						if (clientId == NULL)
-						{
-							LogError("unable to json_object_get_string for clientId");
-							result = NULL;
-						}
-						else if (mallocAndStrcpy_s(&(config.clientId), clientId) != 0) {
-							LogError("Error allocating memory for clientId string");
-							result = NULL;
-						}
-						else
-						{
-							/// TODO: Add other parameters parsing
 
-							result = (MQTT_CONFIG*)malloc(sizeof(MQTT_CONFIG));
-							if (result == NULL) {
-								free(config.mqttBrokerAddress);
-								free(config.clientId);
-							}
-							else {
-								*result = config;
-								LogInfo("MqttGateway config record: mqttBrokerAddress->%s mqttBrokerPort->%d",
-									result->mqttBrokerAddress, result->mqttBrokerPort);
-							}
-						}
-					}
+					result = (MQTT_CONFIG*)malloc(sizeof(MQTT_CONFIG));
+
+					*result = config;
+					LogInfo("MqttGateway config record: mqttBrokerAddress->%s mqttBrokerPort->%d",
+						result->mqttBrokerAddress, result->mqttBrokerPort);
 				}
+				else
+				{
+					if (config.mqttBrokerAddress != NULL)
+						free(config.mqttBrokerAddress);
+
+					if (config.clientId != NULL)
+						free(config.clientId);
+
+					if (config.topic2Publish != NULL)
+						free(config.topic2Publish);
+
+					if (config.topic2Subscribe != NULL)
+						free(config.topic2Subscribe);
+				}				
 			}
 		}
 	}
 
 	return result;
 }
+
 
 void MqttGateway_FreeConfiguration(void * configuration)
 {
@@ -131,25 +129,21 @@ static MODULE_HANDLE MqttGateway_Create(BROKER_HANDLE broker, const void* config
 {
 	LogInfo("MqttGateway_Create_Create call..");
 	MQTT_GATEWAY_DATA * result;
-	MQTT_CONFIG * config = (MQTT_CONFIG *)configuration;
-	
-	int serverURILen = printf("%s:%d", config->mqttBrokerAddress, config->mqttBrokerPort);
-	char serverURI [serverURILen+1];
-	
-	if (sprintf_s(serverURI, sizeof(serverURI), "%s:%d", config->mqttBrokerAddress, config->mqttBrokerPort) < 0) {
-		LogError("Error formatting server URI");
+
+	if (broker == NULL || configuration == NULL)
+	{
+		LogError("invalid MqttModule args.");
+		result = NULL;
 	}
+	else
+	{
+		/*allocate module data struct */
+		result = (MQTT_GATEWAY_DATA*)malloc(sizeof(MQTT_GATEWAY_DATA));
+		result->config = (MQTT_CONFIG *)configuration;
+		result->mqttAdapter = new MqttAdapter(result->config);
 
-	LogInfo("Initializing for server %s", serverURI);
-
-	mqtt::async_client client(serverURI, config->clientId);
-	
-	callback cb;
-	client.set_callback(cb);
-
-	mqtt::connect_options conopts;
-	
-	
+	}
+		
 
 	return result;
 }
@@ -165,9 +159,14 @@ static void MqttGateway_Destroy(MODULE_HANDLE moduleHandle)
 	{
 		MQTT_GATEWAY_DATA* module_data = (MQTT_GATEWAY_DATA*)moduleHandle;
 
+		if (module_data->mqttAdapter != NULL) {			
+			free(module_data->mqttAdapter);
+		}
 		/* Tell thread to stop */
 		module_data->gatewaysRunning = 0;
 		
+		
+
 		free(module_data);
 	}
 }

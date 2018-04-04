@@ -27,9 +27,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="MqttAdapter.cpp" />
     <ClCompile Include="MqttModule.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MqttAdapter.h" />
     <ClInclude Include="MqttModule.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

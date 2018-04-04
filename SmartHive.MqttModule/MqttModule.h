@@ -6,12 +6,14 @@
 #include "broker.h"
 #include "azure_c_shared_utility/threadapi.h"
 
+
 typedef struct MQTT_CONFIG_TAG
 {	
-	char*			mqttBrokerAddress;
+	char*			mqttBrokerAddress= NULL;
 	unsigned int	mqttBrokerPort;
 	char*			clientId;
-	char*			topic;
+	char*			topic2Publish = NULL;
+	char*			topic2Subscribe = NULL; 
 	unsigned int	QoS;
 	char*			login;
 	char*			password;
@@ -23,8 +25,8 @@ typedef struct MQTT_CONFIG_TAG
 typedef struct MQTT_GATEWAY_DATA_TAG
 {
 	BROKER_HANDLE       broker;
-	const void *        mqttConnectionHandle;
-	MQTT_CONFIG			config;
+	void *       mqttAdapter;
+	MQTT_CONFIG*		config;
 	unsigned int        gatewaysRunning : 1;
 } MQTT_GATEWAY_DATA;
 
